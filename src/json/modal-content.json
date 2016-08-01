@@ -1,0 +1,35 @@
+{
+  "content": [
+    {
+      "title": "Overview",
+      "scenario": "<p>Some students want to grow a garden. The garden will be in their schoolyard. The garden will have plants. It will also have earthworms! Your job is to make a model garden.</p>",
+      "read" : "Learn more",
+      "begin": "Start Working",
+      "image": "../media/images/Overview.jpg"
+    },
+    {
+      "title": "Support",
+      "tabs": [
+        {
+          "title": "Developing and Using Models",
+          "descripion": "<p>Scientists use models. Models help them learn. Models help them ask and answer questions.</p><p> You will build a model garden. The model will have  plants. It will have earthworms. The model will help you learn.</p><p>You will change the model. This will help you learn more.</p>"
+        },
+        {
+          "title": "Experiment and Control Support ",
+          "descripion": "<p> Think about what living things need.</p> <p>What do plants need to live?</p> <p>What do animals need to live?</p> <p>What if the needs are not met?</p><p>Think about how much water the plants and earthworms will need.</p> <p>What might happen if they get too much water?</p> <p>What might happen if they get too little water?</p>"
+        },
+        {
+          "title": "Background",
+          "descripion": {
+            "paragraph": "<p>Earthworms and plants help each other. </p><p>Some earthworms live in garden soil. They eat dead leaves. They also eat tiny plant parts.</p><p>Earthworms get water from soil. They make paths in soil when they move. This helps plants get the water they need.</p><p>Earthworms add things to the soil when they poop! These things help plants grow.</p><p> Plants help earthworms by giving them food. </p>"
+          }
+        }
+      ]
+    },
+    {
+      "title": "My Report",
+      "scenario": "Test Report",
+      "task": "To fill the report"
+    }
+  ]
+}

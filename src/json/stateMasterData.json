@@ -1,0 +1,19 @@
+{
+  "currentActivity":"0",
+  "defaultActivity":"1",
+  "activity1":{
+    "defaultItems":[],
+    "expectedItems":["GLASS_BOTTLE"],
+    "draggedItems":[]
+  },
+  "activity2":{
+    "defaultItems":["GLASS_BOTTLE"],
+    "expectedItems":[],
+    "draggedItems":[]
+  },
+  "activity3":{
+    "defaultItems":[],
+    "expectedItems":[],
+    "draggedItems":[]
+  }
+}

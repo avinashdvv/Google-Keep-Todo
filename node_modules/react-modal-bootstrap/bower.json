@@ -1,0 +1,26 @@
+{
+  "name": "react-modal-bootstrap",
+  "version": "1.1.0",
+  "description": "Modal component for ReactJS with Bootstrap style.",
+  "main": "dist/react-modal-bootstrap.js",
+  "keywords": [
+    "react-component",
+    "react",
+    "component",
+    "react-modal",
+    "react-modal-bootstrap",
+    "modal",
+    "bootstrap",
+    "react-modal"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}
