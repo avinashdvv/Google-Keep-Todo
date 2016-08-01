@@ -56,12 +56,16 @@ export function fetchData(data) {
 export function fetchRejected(data) {
   return{
     type: FETCH_REJECTED,
-    payload:  data
+    payload: {
+      data : data
+    }
   }
 }
 export function getLabelAction(data) {
   return{
     type: FETCH_LABELS,
-    payload:  data
+    payload:  {
+      data : data
+    }
   }
 }

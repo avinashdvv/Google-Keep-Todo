@@ -2,7 +2,7 @@ import React,{ Component } from 'react';
 import { connect } from 'react-redux';
 import Card from './Card';
 
-import '../style/noticeboard.scss';
+import '../../style/noticeboard.scss';
 
 function mapStatetoProps({dataReducers}){
   return {

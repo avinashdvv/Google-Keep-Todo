@@ -47,7 +47,6 @@ class NavBar extends Component {
     console.log(desc);
   }
   render(){
-    console.log('navbar ----------',this.props);
     const {onCompleteTask, tasks } = this.props;
 
     var options = [

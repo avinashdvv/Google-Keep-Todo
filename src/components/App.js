@@ -1,8 +1,8 @@
 import React,{ Component } from 'react';
 import NavBar from './NavBar';
-import NoticeBoard from './NoticeBoard';
-import Label from './Label';
-import getToken from '../actions/labels';
+import NoticeBoard from './NoticeBoard/NoticeBoard';
+import Label from './Label/Label';
+import { getToken } from '../actions';
 import $ from 'jquery';
 import {
   Modal,
@@ -79,10 +79,9 @@ class App extends Component {
   //   // }
   // }
   render(){
-    console.log('app ------------',this.props);
     return(
       <div>
-          <NavBar token={this.props}/>
+          <NavBar />
           <Modal isOpen={this.state.isOpen} onRequestHide={this.hideModal}>
             <ModalHeader>
               <ModalClose onClick={this.hideModal}/>
@@ -101,7 +100,7 @@ class App extends Component {
           </Modal>
         <div className='row'>
             <div className='col-md-2'>
-              <Label token={this.props.Token}/>
+              <Label token={this.props.token}/>
             </div>
             <div className='col-md-10'>
               <NoticeBoard/>

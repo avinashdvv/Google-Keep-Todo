@@ -6,6 +6,8 @@ import {
     } from '../actions';
 
 export default function ( state ={
+  data : 'data',
+  arrayData : [],
   token : ''
  }, action){
    switch (action.type) {
@@ -21,12 +23,12 @@ export default function ( state ={
      }
      case FETCH_LABELS : {
        return {...state,
-               data: action.payload.data
+               arrayData: action.payload.data
        }
      }
      case GET_TOKEN : {
        return {...state,
-               data: action.payload.token
+               token : action.payload.token
        }
      }
      default:
