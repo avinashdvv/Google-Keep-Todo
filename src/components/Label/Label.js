@@ -4,6 +4,8 @@ import $ from 'jquery';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getLabelAction } from '../../actions';
+import  CreatLabel  from './CreatLabel';
+import  EditLabel  from './EditLabel';
 
 function mapStatetoProps({networkReducers}){
   return {
@@ -26,7 +28,6 @@ class Label extends Component {
        headers: {
          "Authorization": "Token "+this.props.token
        },
-       dataType: 'json',
        success: function(response) {
             this.props.getLabelActionCall(response);
            console.log("response-->",response);
@@ -38,19 +39,18 @@ class Label extends Component {
   }
   render(){
     console.log("labels-------------",this.props);
-    let labels = this.props.data.map((label) => {
+    let labels = this.props.data.map(function(data){
       return(
-        <div>{label}</div>
+        <div>{data.id} :{data.name}</div>
       )
     });
-
-
     return(
     <div className='side-panel'>
       <button className='btn btn-success' onClick={this.getLabel}>Label</button>
-      <button className= 'btn btn-sm btn-info'>Edit</button>
       <br/>
-      labels:
+      <CreatLabel token={this.props.token}/>
+      <EditLabel token= {this.props.token} labelDetails={this.props.data}/>
+      <label>labels:</label>
       {labels}
     </div>
     );

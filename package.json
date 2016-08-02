@@ -60,6 +60,7 @@
     "redux-logger": "^2.6.1",
     "redux-promise": "^0.5.3",
     "redux-promise-middleware": "^3.3.2",
+    "redux-session-storage": "^2.0.1",
     "redux-thunk": "^2.1.0",
     "remote-redux-devtools": "^0.3.4",
     "remotedev": "^0.1.2",

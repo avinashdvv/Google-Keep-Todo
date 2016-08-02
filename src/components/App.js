@@ -103,7 +103,7 @@ class App extends Component {
               <Label token={this.props.token}/>
             </div>
             <div className='col-md-10'>
-              <NoticeBoard/>
+              <NoticeBoard token={this.props.token}/>
             </div>
         </div>
       </div>

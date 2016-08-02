@@ -2,13 +2,17 @@ import {
       FETCH_DATA,
       FETCH_REJECTED,
       FETCH_LABELS,
-      GET_TOKEN
+      GET_TOKEN,
+      CREAT_LABEL,
+      EDIT_LABEL,
+      EDIT_LABEL_DETAILS
     } from '../actions';
 
 export default function ( state ={
-  data : 'data',
+  data : '',
   arrayData : [],
-  token : ''
+  token : '',
+  label : ''
  }, action){
    switch (action.type) {
      case FETCH_DATA : {
@@ -29,6 +33,21 @@ export default function ( state ={
      case GET_TOKEN : {
        return {...state,
                token : action.payload.token
+       }
+     }
+     case CREAT_LABEL : {
+       return {...state,
+              label : action.payload.label
+       }
+     }
+     case EDIT_LABEL : {
+       return {...state,
+              label : action.payload.label
+       }
+     }
+     case EDIT_LABEL_DETAILS : {
+       return {...state,
+              data : action.payload.data
        }
      }
      default:

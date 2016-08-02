@@ -6,7 +6,35 @@ export const FETCH_REJECTED = 'FETCH_REJECTED';
 export const GET_USER_CREDENTAILS = 'GET_USER_CREDENTAILS';
 export const FETCH_LABELS = 'FETCH_LABELS';
 export const GET_TOKEN = 'GET_TOKEN';
+export const CREAT_LABEL = 'CREAT_LABEL'
+export const EDIT_LABEL = 'CREAT_LABEL'
+export const EDIT_LABEL_DETAILS = 'EDIT_LABEL_DETAILS'
 
+export function editLabelIdAction(id, name) {
+  return {
+    type: EDIT_LABEL_DETAILS,
+    payload: {
+      id : id,
+      name : name
+    }
+  }
+}
+export function editLabelAction(label) {
+  return {
+    type: EDIT_LABEL,
+    payload: {
+      label : label
+    }
+  }
+}
+export function creatLabelAction(label) {
+  return {
+    type: CREAT_LABEL,
+    payload: {
+      label : label
+    }
+  }
+}
 export function getToken(token) {
   return {
     type: GET_TOKEN,
@@ -15,7 +43,6 @@ export function getToken(token) {
     }
   }
 }
-
 export function addCard(id,dec,label) {
   return {
     type: GET_TODO,
