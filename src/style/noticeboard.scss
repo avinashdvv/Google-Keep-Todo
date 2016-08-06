@@ -1,4 +1,8 @@
+$base-bg-colr : rgb(232, 232, 232);
 .notice-board{
   min-height: 500px;
-  background: lightyellow;
+  background: $base-bg-colr;
+}
+.todo-body{
+  width: 100% !important;
 }

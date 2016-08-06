@@ -2,15 +2,8 @@ import React,{ Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { creatLabelAction } from '../../actions';
-import {
-  Modal,
-  ModalHeader,
-  ModalTitle,
-  ModalClose,
-  ModalBody,
-  ModalFooter
-} from 'react-modal-bootstrap';
 import $ from 'jquery';
+import TextField from 'material-ui/TextField';
 
 function mapStatetoProps({networkReducers}){
   return {
@@ -28,7 +21,8 @@ class CreatLabel extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.openModal = this.openModal.bind(this);
     this.state = {
-      isOpen : false
+      isOpen : false,
+      value : ''
     }
   }
   openModal(){
@@ -65,29 +59,23 @@ class CreatLabel extends Component {
        }.bind(this)
      });
   }
+  handleChange(event){
+    this.setState({
+      value: event.target.value,
+    });
+  }
   render(){
     console.log('CREAT_LABEL ---------', this.props);
     return(
       <div >
           <button className= 'btn btn-sm btn-info' onClick={this.openModal}>CREATE</button>
-            <Modal isOpen={this.state.isOpen}>
-              <ModalHeader>
-                <ModalTitle>Creat Label</ModalTitle>
-              </ModalHeader>
-              <ModalBody>
-                <input className='form-control' placeholder='label' ref='label'/>
-                <br/>
-              </ModalBody>
-              <ModalFooter>
-                <button className='btn sm-btn btn-success' onClick={this.makeLabel}>
-                  Creat
-                </button>
-                <button className='btn sm-btn btn-danger' onClick={this.closeModal}>
-                  Cancel
-                </button>
-              </ModalFooter>
-            </Modal>
-            {this.props.label.name}
+            <TextField
+              className='todo-body'
+              value={this.state.value}
+              onChange={this.handleChange}
+              id={'body_'+value.id}
+            />
+          {this.props.label.name}
       </div>
     );
   }

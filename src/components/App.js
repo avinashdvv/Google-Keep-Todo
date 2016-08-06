@@ -4,16 +4,16 @@ import NoticeBoard from './NoticeBoard/NoticeBoard';
 import Label from './Label/Label';
 import { getToken } from '../actions';
 import $ from 'jquery';
-import {
-  Modal,
-  ModalHeader,
-  ModalTitle,
-  ModalClose,
-  ModalBody,
-  ModalFooter
-} from 'react-modal-bootstrap';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+var injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
+import RaisedButton from 'material-ui/RaisedButton';
+import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
 
 function mapStatetoProps({networkReducers}){
   return {
@@ -24,27 +24,23 @@ function mapStatetoProps({networkReducers}){
 function mapDispatchToPros (dispatch) {
   return bindActionCreators({ getTokenMethod : getToken},dispatch);
 }
-
 class App extends Component {
   constructor(props) {
     super(props);
-    this.openModal = this.openModal.bind(this);
-    // this.hideModal = this.hideModal.bind(this);
     this.data = this.props.networkReducer;
+    this.getLogin = this.getLogin.bind(this);
     this.state = {
-        isOpen: false
+        open: false
       }
   }
-  openModal(){
-   this.setState({
-     isOpen: true
-   });
+  getChildContext() {
+    return {muiTheme: getMuiTheme()};
   }
-  componentDidMount(){
-    // this.refs.username.value
-    // this.refs.password.value
-    let username = 'avinash';
-    let password = 'password';
+  getLogin(){
+    let username = this.refs.username.value;
+    let password = this.refs.password.value;
+    // let username = 'avinash';
+    // let password = 'password';
     $.ajax({
        type: "POST",
        url: "http://54.199.244.49/auth/login/",
@@ -56,8 +52,9 @@ class App extends Component {
        dataType: 'json',
        success: function(response) {
          this.props.getTokenMethod(response.Token);
+         localStorage.setItem("token", response.Token);
             this.setState({
-                isOpen: false
+                open: false
               });
            console.log("response-->",response);
         }.bind(this),
@@ -66,50 +63,60 @@ class App extends Component {
        }.bind(this)
      });
   }
-  // componentDidMount(){
-  //   // let token = localStorage.getItem("Token");
-  //   // if(token){
-  //   //   this.setState({
-  //   //     isOpen: false
-  //   //   });
-  //   // }else{
-  //     this.setState({
-  //       isOpen: true
-  //     });
-  //   // }
-  // }
+
+  handleClose = () => {
+    this.setState({open: false});
+  };
+  componentDidMount(){
+    if(!localStorage.getItem("token")){
+      this.setState({
+        open: true
+      })
+    }
+  }
   render(){
+    let authToken = localStorage.getItem("token");
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.handleClose}
+      />,
+      <FlatButton
+        label="Submit"
+        primary={true}
+        keyboardFocused={true}
+        onTouchTap={this.getLogin}
+      />,
+    ];
     return(
       <div>
           <NavBar />
-          <Modal isOpen={this.state.isOpen} onRequestHide={this.hideModal}>
-            <ModalHeader>
-              <ModalClose onClick={this.hideModal}/>
-              <ModalTitle>Modal title</ModalTitle>
-            </ModalHeader>
-            <ModalBody>
+          <div className='row'>
+            <div className='col-md-3'>
+              <Label token={authToken}/>
+            </div>
+            <div className='col-md-9'>
+              <Dialog
+              title="Dialog With Actions"
+              actions={actions}
+              modal={false}
+              open={this.state.open}
+              onRequestClose={this.handleClose}
+              >
               <input className='form-control' placeholder='username' ref='username'/>
               <br/>
               <input className='form-control' placeholder='password' ref='password'/>
-            </ModalBody>
-            <ModalFooter>
-              <button className='btn sm-btn btn-success' onClick={this.hideModal}>
-                Login
-              </button>
-            </ModalFooter>
-          </Modal>
-        <div className='row'>
-            <div className='col-md-2'>
-              <Label token={this.props.token}/>
-            </div>
-            <div className='col-md-10'>
-              <NoticeBoard token={this.props.token}/>
+            </Dialog>
+              <NoticeBoard token={authToken}/>
             </div>
         </div>
       </div>
     );
   }
 }
-
+App.childContextTypes = {
+  muiTheme: React.PropTypes.object.isRequired,
+}
 
 export default connect(mapStatetoProps, mapDispatchToPros) (App);

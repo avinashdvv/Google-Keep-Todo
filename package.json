@@ -11,16 +11,13 @@
     "debug": "remotedev --hostname=localhost --port=8000"
   },
   "repository": {
-    "type": "git",
-    "url": "git+https://gopikrishna403@bitbucket.org/jamiaditya/hurix-plantsandearth.git"
+    "type": "git"
   },
   "author": "Hurix",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/jamiaditya/hurix-plantsandearth#readme",
   "devDependencies": {
     "babel-core": "^6.10.4",
     "babel-loader": "^6.2.4",
-    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-runtime": "^6.9.0",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
@@ -33,8 +30,8 @@
     "file-loader": "^0.9.0",
     "html-loader": "^0.4.3",
     "json-loader": "^0.5.4",
+    "muicss": "^0.6.8",
     "node-sass": "^3.8.0",
-    "redux": "^3.5.2",
     "remote-redux-devtools": "^0.3.4",
     "sass-loader": "^4.0.0",
     "style-loader": "^0.13.1",
@@ -43,26 +40,18 @@
     "webpack-dev-server": "^1.14.1"
   },
   "dependencies": {
-    "axios": "^0.13.1",
     "bootstrap-sass": "^3.3.6",
-    "jquery": "^3.1.0",
     "react": "^15.2.1",
     "react-bootstrap": "^0.29.5",
     "react-dom": "^15.2.1",
     "react-html5video": "^1.2.10",
     "react-logger": "^1.1.0",
-    "react-modal": "^1.4.0",
-    "react-modal-bootstrap": "^1.1.0",
     "react-quill": "^0.4.1",
     "react-redux": "^4.4.5",
-    "react-select": "^1.0.0-beta14",
+    "react-tap-event-plugin": "^1.0.0",
+    "react-toolbox": "^1.0.3",
     "redux": "^3.5.2",
-    "redux-logger": "^2.6.1",
-    "redux-promise": "^0.5.3",
-    "redux-promise-middleware": "^3.3.2",
-    "redux-session-storage": "^2.0.1",
     "redux-thunk": "^2.1.0",
-    "remote-redux-devtools": "^0.3.4",
     "remotedev": "^0.1.2",
     "remotedev-extension": "0.0.10",
     "remotedev-server": "^0.1.2"

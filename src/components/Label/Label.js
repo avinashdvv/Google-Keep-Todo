@@ -4,9 +4,8 @@ import $ from 'jquery';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { getLabelAction } from '../../actions';
-import  CreatLabel  from './CreatLabel';
 import  EditLabel  from './EditLabel';
-
+import ActionLabel from 'react-material-icons/icons/action/label';
 function mapStatetoProps({networkReducers}){
   return {
     data : networkReducers.arrayData,
@@ -39,19 +38,32 @@ class Label extends Component {
   }
   render(){
     console.log("labels-------------",this.props);
+    let labelId;
     let labels = this.props.data.map(function(data){
+      labelId = data.id;
       return(
-        <div>{data.id} :{data.name}</div>
+        <li className='label-name' id={data.id} >
+          <ActionLabel/>
+          <span>{data.name}</span>
+       </li>
       )
     });
+    if((this.props.token) && (!labelId)){
+      this.getLabel();
+    }
     return(
     <div className='side-panel'>
-      <button className='btn btn-success' onClick={this.getLabel}>Label</button>
-      <br/>
-      <CreatLabel token={this.props.token}/>
-      <EditLabel token= {this.props.token} labelDetails={this.props.data}/>
-      <label>labels:</label>
-      {labels}
+      <div className='label-list'>
+        <div className='row label-options'>
+          <label className='col-md-6 label-heading text-left'>labels:</label>
+          <EditLabel token= {this.props.token} labelDetails={this.props.data}/>
+        </div>
+        <div>
+          <ul>
+            {labels}
+          </ul>
+        </div>
+      </div>
     </div>
     );
   }

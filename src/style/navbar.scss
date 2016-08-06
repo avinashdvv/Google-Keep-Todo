@@ -1,6 +1,7 @@
 // @import 'react-select/dist/react-select.css';
+$base-bg-colr : #FFBB00;
 .nav-bar{
-  height: 50px;
+  background-color: $base-bg-colr !important;
 }
 .activity-icons{
   i{

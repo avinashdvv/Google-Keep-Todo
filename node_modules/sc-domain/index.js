@@ -21,19 +21,19 @@ var SCDomain = function () {
   this._errorHandler = function errorHandler(err) {
     self.emit('error', err);
   };
+
+  this.run = function (callback) {
+    var that = this;
+    var args = arguments;
+
+    (new Promise(function (resolve, reject) {
+      var functionArgs = Array.prototype.slice.call(args, 1);
+      callback.apply(that, functionArgs);
+    })).catch(self._errorHandler);
+  };
 };
 
 SCDomain.prototype = Object.create(EventEmitter.prototype);
-
-SCDomain.prototype.run = function (callback) {
-  var self = this;
-  var args = arguments;
-
-  (new Promise(function (resolve, reject) {
-    var functionArgs = Array.prototype.slice.call(args, 1);
-    callback.apply(self, functionArgs);
-  })).catch(this._errorHandler);
-};
 
 SCDomain.prototype.bind = function (callback) {
   var self = this;

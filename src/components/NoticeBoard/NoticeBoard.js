@@ -2,19 +2,22 @@ import React,{ Component } from 'react';
 import { connect } from 'react-redux';
 import $ from 'jquery';
 import '../../style/noticeboard.scss';
-
-// function mapStatetoProps({dataReducers}){
-//   return {
-//     id : dataReducers.id,
-//     description: dataReducers.desc,
-//     label: dataReducers.label
-//   }
-// }
+import { addCard, getCards } from '../../actions';
+import { bindActionCreators } from 'redux';
+import TodoCard from './TodoCard';
+import CreatTodo from './CreatTodo';
+function mapStatetoProps({dataReducers}){
+  return {
+    cardsData: dataReducers.notesData
+  }
+}
+function mapDispatchToPros (dispatch) {
+  return bindActionCreators({ addCard : addCard,getCards : getCards },dispatch);
+}
 class NoticeBoard extends Component {
   constructor(props) {
     super(props);
     this.getNotes = this.getNotes.bind(this);
-    this.creatNote = this.creatNote.bind(this);
   }
   getNotes(){
     $.ajax({
@@ -25,49 +28,36 @@ class NoticeBoard extends Component {
          'Authorization': "Token "+this.props.token,
        },
        success: function(response) {
-         console.log("response-->",response);
+        //  console.log("response-->",response);
+         this.props.getCards(response);
+         console.log("NOTIECE BORAD -------",this.props);
         }.bind(this),
        error: function(err) {
          console.error('LABEL EDIT IS NOT WORKING',err);
        }.bind(this)
      });
   }
-  creatNote(){
-    let todoData = this.refs.todoData.value
-    $.ajax({
-       type: "POST",
-       url: "http://54.199.244.49/todo/note/",
-       dataType: 'json',
-       headers:{
-         'Authorization': "Token "+this.props.token,
-       },
-       data:{
-         name: 'www',
-         body: 'asuper'
-       },
-       success: function(response) {
-         console.log("response-->",response);
-        }.bind(this),
-       error: function(err) {
-         console.error('LABEL EDIT IS NOT WORKING',err);
-       }.bind(this)
-     });
-  }
+
   render(){
+    let cardId;
+    let cards = this.props.cardsData.map(function(value){
+      cardId = value.id;
+      return  null
+    });
+    if((this.props.token) && (this.props.cardsData.length == 0)){
+        this.getNotes();
+    }
     return(
       <div className='notice-board'>
         <div className='row'>
-            <div className="col-md-offset-3 col-md-3">
-              <input ref='todoData' className="form-control"  type="text"/>
+            <div className="col-md-offset-3 col-md-7">
+              <CreatTodo token={this.props.token}/>
             </div>
-            <button type="submit" className="btn btn-default" onClick={this.creatNote}>Submit</button>
-          <button type="submit" onClick={this.getNotes} className="btn btn-success">Notes</button>
         </div>
-
+        <TodoCard token={this.props.token} cardsData={this.props.cardsData}/>
       </div>
     );
   }
 }
 
-export default NoticeBoard;
- // connect(mapStatetoProps)
+export default connect(mapStatetoProps, mapDispatchToPros) (NoticeBoard);

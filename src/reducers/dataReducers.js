@@ -1,4 +1,5 @@
 import {GET_TODO ,
+        ADD_TODO,
         EDIT_TODO,
         DEL_TODO,
         GET_USER_CREDENTAILS} from '../actions';
@@ -8,14 +9,22 @@ export default function(state = {
   lebel : '',
   data : '',
   username: '',
-  password: ''
+  password: '',
+  name : '',
+  body : '',
+  notesData : [],
 }, action){
   switch (action.type) {
-    case GET_TODO:{
+    case ADD_TODO:{
       return{...state,
                 id : action.payload.id,
-                desc : action.payload.desc,
-                label : action.payload.label
+                dody : action.payload.desc,
+                name : action.payload.label
+                }
+    }
+    case GET_TODO:{
+      return{...state,
+                notesData : action.payload.data,
                 }
     }
     case EDIT_TODO: {
@@ -28,7 +37,6 @@ export default function(state = {
     case DEL_TODO:{
        return {...state,
                 id : action.payload.id,
-                label : action.payload.label
                 }
     }
     case GET_USER_CREDENTAILS:{

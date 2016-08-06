@@ -1,4 +1,5 @@
 export const GET_TODO = 'GET_TODO';
+export const ADD_TODO = 'ADD_TODO';
 export const EDIT_TODO = 'EDIT_TODO';
 export const DEL_TODO = 'DEL_TODO';
 export const FETCH_DATA = 'FETCH_DATA';
@@ -9,6 +10,7 @@ export const GET_TOKEN = 'GET_TOKEN';
 export const CREAT_LABEL = 'CREAT_LABEL'
 export const EDIT_LABEL = 'CREAT_LABEL'
 export const EDIT_LABEL_DETAILS = 'EDIT_LABEL_DETAILS'
+
 
 export function editLabelIdAction(id, name) {
   return {
@@ -43,13 +45,21 @@ export function getToken(token) {
     }
   }
 }
-export function addCard(id,dec,label) {
+export function addCard(id,name,body) {
+  return {
+    type: ADD_TODO,
+    payload: {
+      id : "card_"+id,
+      name : name,
+      body : body
+    }
+  }
+}
+export function getCards(data) {
   return {
     type: GET_TODO,
     payload: {
-      id : "card_"+id,
-      desc : dec,
-      label : label
+      data : data
     }
   }
 }
@@ -63,12 +73,11 @@ export function editCard(id,dec,label) {
     }
   }
 }
-export function deleteCard(id,label) {
+export function deleteCard(id) {
   return{
     type: DEL_TODO,
     payload: {
-      id : "card_"+id,
-      label : label
+      id : id
     }
   }
 }

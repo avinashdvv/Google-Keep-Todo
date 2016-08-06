@@ -26,6 +26,8 @@ var emptyObject = require('fbjs/lib/emptyObject');
 var instantiateReactComponent = require('./instantiateReactComponent');
 var invariant = require('fbjs/lib/invariant');
 
+var pendingTransactions = 0;
+
 /**
  * @param {ReactElement} element
  * @return {string} the HTML markup
@@ -36,6 +38,8 @@ function renderToStringImpl(element, makeStaticMarkup) {
     ReactUpdates.injection.injectBatchingStrategy(ReactServerBatchingStrategy);
 
     transaction = ReactServerRenderingTransaction.getPooled(makeStaticMarkup);
+
+    pendingTransactions++;
 
     return transaction.perform(function () {
       var componentInstance = instantiateReactComponent(element, true);
@@ -49,10 +53,13 @@ function renderToStringImpl(element, makeStaticMarkup) {
       return markup;
     }, null);
   } finally {
+    pendingTransactions--;
     ReactServerRenderingTransaction.release(transaction);
     // Revert to the DOM batching strategy since these two renderers
     // currently share these stateful modules.
-    ReactUpdates.injection.injectBatchingStrategy(ReactDefaultBatchingStrategy);
+    if (!pendingTransactions) {
+      ReactUpdates.injection.injectBatchingStrategy(ReactDefaultBatchingStrategy);
+    }
   }
 }
 

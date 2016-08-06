@@ -2,15 +2,10 @@ import React,{ Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { editLabelAction } from '../../actions';
-import {
-  Modal,
-  ModalHeader,
-  ModalTitle,
-  ModalClose,
-  ModalBody,
-  ModalFooter
-} from 'react-modal-bootstrap';
+import FlatButton from 'material-ui/FlatButton';
+import Dialog from 'material-ui/Dialog';
 import $ from 'jquery';
+import  CreatLabel  from './CreatLabel';
 
 function mapStatetoProps({networkReducers}){
   return {
@@ -44,17 +39,16 @@ class EditLabel extends Component {
     });
   }
   editLabel(data, e){
-    let newLabel = document.getElementById(data.id).value;
+    let tempLabel = document.getElementById(data.id).value;
+    let newLabel = {"name": ""+tempLabel}
     $.ajax({
        type: "POST",
        url: "http://54.199.244.49/todo/label/"+data.id+"/",
        dataType: 'json',
        headers:{
-         'Authorization': "Token "+this.props.token,
+         Authorization: "Token "+this.props.token,
        },
-       data:{
-         name: newLabel,
-       },
+       data:JSON.stringify(newLabel),
        success: function(response) {
          console.log("response-->",response);
         //  this.props.editLabelAction(response);
@@ -95,23 +89,34 @@ class EditLabel extends Component {
         </div>
       )
     });
+    const actions = [
+      <FlatButton
+        label="Cancel"
+        primary={true}
+        onTouchTap={this.closeModal}
+      />
+    ];
+    const customContentStyle = {
+      width: '25%',
+      maxWidth: 'none',
+      maring: '0 auto'
+    };
 
     return(
-      <div >
-          <button className= 'btn btn-sm btn-info' onClick={this.openModal}>EDIT</button>
-            <Modal isOpen={this.state.isOpen}>
-              <ModalHeader>
-                <ModalTitle>EDIT OR DELETE Label</ModalTitle>
-              </ModalHeader>
-              <ModalBody>
-                  {labels}
-              </ModalBody>
-              <ModalFooter>
-                <button className='btn sm-btn btn-danger' onClick={this.closeModal}>
-                  Done
-                </button>
-              </ModalFooter>
-            </Modal>
+      <div className='col-md-6'>
+          <FlatButton label="EDIT" onTouchTap={this.openModal}/>
+          <Dialog
+            title="Dialog With Actions"
+            actions={actions}
+            modal={false}
+            open={this.state.isOpen}
+            onRequestClose={this.closeModal}
+            autoScrollBodyContent={true}
+            contentStyle={customContentStyle}
+            >
+            <CreatLabel token={this.props.token}/>
+            {labels}
+          </Dialog>
             {this.props.label.name}
       </div>
     );
