@@ -52,7 +52,6 @@ class Label extends Component {
       this.getLabel();
     }
     return(
-    <div className='side-panel'>
       <div className='label-list'>
         <div className='row label-options'>
           <label className='col-md-6 label-heading text-left'>labels:</label>
@@ -64,7 +63,6 @@ class Label extends Component {
           </ul>
         </div>
       </div>
-    </div>
     );
   }
 }

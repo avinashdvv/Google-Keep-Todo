@@ -3,6 +3,12 @@ $base-bg-colr : rgb(232, 232, 232);
   min-height: 500px;
   background: $base-bg-colr;
 }
+.row{
+  margin: 0px;
+}
 .todo-body{
   width: 100% !important;
+}
+.notice-board-container{
+  padding: 0px;
 }

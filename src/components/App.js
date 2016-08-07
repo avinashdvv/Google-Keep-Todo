@@ -93,21 +93,21 @@ class App extends Component {
       <div>
           <NavBar />
           <div className='row'>
-            <div className='col-md-3'>
+            <div className='col-md-3 side-panel'>
               <Label token={authToken}/>
             </div>
-            <div className='col-md-9'>
+            <div className='col-md-9 notice-board-container'>
               <Dialog
-              title="Dialog With Actions"
-              actions={actions}
-              modal={false}
-              open={this.state.open}
-              onRequestClose={this.handleClose}
-              >
-              <input className='form-control' placeholder='username' ref='username'/>
-              <br/>
-              <input className='form-control' placeholder='password' ref='password'/>
-            </Dialog>
+                title="Dialog With Actions"
+                actions={actions}
+                modal={false}
+                open={this.state.open}
+                onRequestClose={this.handleClose}
+                >
+                <input className='form-control' placeholder='username' ref='username'/>
+                <br/>
+                <input className='form-control' placeholder='password' ref='password'/>
+              </Dialog>
               <NoticeBoard token={authToken}/>
             </div>
         </div>

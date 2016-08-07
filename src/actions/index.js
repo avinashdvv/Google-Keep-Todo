@@ -10,8 +10,16 @@ export const GET_TOKEN = 'GET_TOKEN';
 export const CREAT_LABEL = 'CREAT_LABEL'
 export const EDIT_LABEL = 'CREAT_LABEL'
 export const EDIT_LABEL_DETAILS = 'EDIT_LABEL_DETAILS'
+export const LABEL_LIST_VAL = 'LABEL_LIST_VAL';
 
-
+export function listLabelAction(data) {
+  return {
+    type: LABEL_LIST_VAL,
+    payload: {
+      data : data
+    }
+  }
+}
 export function editLabelIdAction(id, name) {
   return {
     type: EDIT_LABEL_DETAILS,

@@ -130,13 +130,13 @@ class TodoCard extends Component {
             id={'body_'+value.id}
           />
         </Dialog>
+        <br/>
       </div>
       );
     });
     return(
       <div>
         {cards}
-        <br/>
       </div>
     );
   }

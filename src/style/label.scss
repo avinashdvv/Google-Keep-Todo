@@ -2,6 +2,8 @@ $base-bg-colr : rgb(232, 232, 232);
 .side-panel{
   min-height: 500px;
   background: $base-bg-colr;
+  height: 100%;
+  padding-right: 0px;
 }
 .label-list{
   .label-heading{
@@ -22,4 +24,12 @@ $base-bg-colr : rgb(232, 232, 232);
       text-transform: full-width;
     }
   }
+}
+.new-label{
+  width: 80% !important;
+  min-height: 20px !important;
+}
+.edit-label{
+  width: 70% !important;
+  min-height: 20px !important;
 }

@@ -2,7 +2,8 @@ import {GET_TODO ,
         ADD_TODO,
         EDIT_TODO,
         DEL_TODO,
-        GET_USER_CREDENTAILS} from '../actions';
+        GET_USER_CREDENTAILS,
+        LABEL_LIST_VAL} from '../actions';
 export default function(state = {
   id : '',
   desc : '',
@@ -43,6 +44,11 @@ export default function(state = {
       return {...state,
               username : action.payload.username,
               password : action.payload.username
+      }
+    }
+    case LABEL_LIST_VAL:{
+      return {...state,
+              data : action.payload.data,
       }
     }
     default:

@@ -26,7 +26,6 @@ class NavBar extends Component {
 
   render(){
     const {onCompleteTask, tasks } = this.props;
-
    return(
       <div>
         <AppBar
