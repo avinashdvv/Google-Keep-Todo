@@ -1,7 +1,7 @@
 import React,{ Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { editLabelAction,listLabelAction } from '../../actions';
+import { editLabelAction} from '../../actions';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 import $ from 'jquery';
@@ -9,16 +9,14 @@ import  CreatLabel  from './CreatLabel';
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
 
-function mapStatetoProps({networkReducers, dataReducers}){
+function mapStatetoProps({networkReducers}){
   return {
     label : networkReducers.label,
-    labelData : dataReducers.data
   }
 }
 function mapDispatchToPros (dispatch) {
   return bindActionCreators({
      editLabelAction : editLabelAction,
-     listLabelAction : listLabelAction
    },dispatch);
 }
 
@@ -29,8 +27,7 @@ class EditLabel extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.openModal = this.openModal.bind(this);
     this.state = {
-      isOpen : false,
-      value : 'none'
+      isOpen : false
     }
   }
   openModal(){
@@ -38,23 +35,15 @@ class EditLabel extends Component {
       isOpen : true,
     });
   }
-  handleLabelList = (value) => {
-    console.log('handlelitn' , value);
-    if(!this.state.isOpen){
-      console.error('hi');
-      this.props.listLabelAction(value);
-    }
-  }
+
   closeModal(){
     this.setState({
       isOpen : false
     });
   }
-  handleChange(event){
-      this.props.listLabelAction(event.target.value);
-  }
+
   editLabel(data, e){
-    let tempLabel = document.getElementById(data.id).value;
+    let tempLabel = document.getElementById("label_"+data.id).value;
     let newLabel = {"name": ""+tempLabel}
     $.ajax({
        type: "POST",
@@ -96,25 +85,22 @@ class EditLabel extends Component {
     let labels = this.props.labelDetails.map((data) => {
       let itemClickEdit = this.editLabel.bind(this, data);
       let itemClickDelete = this.deleteLabel.bind(this, data.id);
-      let tiggerHandleChange = this.handleChange.bind(this);
-      // this.handleLabelList(data.name);
       return(
         <div >
             <IconButton
               iconClassName="material-icons"
               tooltip="Ligature"
-              onClick={itemClickEdit}
+              onClick={itemClickDelete}
             >delete</IconButton>
             <TextField
-               id={data.id}
+              id={"label_"+data.id}
               className='edit-label'
-              value={data.name}
-              onChange={tiggerHandleChange}
+              defaultValue={data.name}
             ></TextField>
             <IconButton
               iconClassName="material-icons"
               tooltip="Ligature"
-              onClick={itemClickDelete}
+              onClick={itemClickEdit}
             >done</IconButton>
         </div>
       )

@@ -4,8 +4,8 @@ import { addCard } from '../../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
 import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 
 function mapDispatchToPros (dispatch) {
   return bindActionCreators({
@@ -83,7 +83,12 @@ class CreatTodo extends Component {
               hintText="Take a note"
             ></TextField>
           </CardText>
-          <FlatButton label="done" primary={true} id='doneBtn'onTouchTap={this.creatNote} />
+          <RaisedButton
+            label="done"
+            primary={true}
+            id='doneBtn'
+            className='done-btn'
+            onTouchTap={this.creatNote} />
         </Card>
         <br/>
       </div>

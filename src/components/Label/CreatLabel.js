@@ -58,6 +58,7 @@ class CreatLabel extends Component {
           <TextField
             className='new-label'
             id="newLabel"
+            hintText="Creat new label"
           ></TextField>
           <IconButton
             iconClassName="material-icons"
