@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import { getLabelAction } from '../../actions';
 import  EditLabel  from './EditLabel';
 import ActionLabel from 'react-material-icons/icons/action/label';
+
 function mapStatetoProps({networkReducers}){
   return {
     data : networkReducers.arrayData,

@@ -98,7 +98,7 @@ class App extends Component {
             </div>
             <div className='col-md-9 notice-board-container'>
               <Dialog
-                title="Dialog With Actions"
+                title="User Login"
                 actions={actions}
                 modal={false}
                 open={this.state.open}
