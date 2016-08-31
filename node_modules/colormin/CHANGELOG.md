@@ -1,3 +1,7 @@
+# 1.1.2
+
+* Improved performance of `isKeyword` (thanks to @maxnordlund & @ljharb).
+
 # 1.1.1
 
 * Bump css-color-names to 0.0.4.

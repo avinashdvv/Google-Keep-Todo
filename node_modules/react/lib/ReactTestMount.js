@@ -14,7 +14,6 @@
 var _prodInvariant = require('./reactProdInvariant');
 
 var ReactElement = require('./ReactElement');
-var ReactInstrumentation = require('./ReactInstrumentation');
 var ReactReconciler = require('./ReactReconciler');
 var ReactUpdates = require('./ReactUpdates');
 
@@ -97,6 +96,9 @@ ReactTestInstance.prototype.unmount = function (nextElement) {
 };
 ReactTestInstance.prototype.toJSON = function () {
   var inst = getHostComponentFromComposite(this._component);
+  if (inst === null) {
+    return null;
+  }
   return inst.toJSON();
 };
 
@@ -116,10 +118,6 @@ var ReactTestMount = {
     // according to the current batching strategy.
 
     ReactUpdates.batchedUpdates(batchedMountComponentIntoNode, instance);
-    if (process.env.NODE_ENV !== 'production') {
-      // The instance here is TopLevelWrapper so we report mount for its child.
-      ReactInstrumentation.debugTool.onMountRootComponent(instance._renderedComponent._debugID);
-    }
     return new ReactTestInstance(instance);
   }
 

@@ -1,7 +1,20 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
+#Webstorm preferences
+.idea
+.DS_Store
 
-# dependencies
-node_modules
+#eslint files
+.eslintcache
+
+#packaged dependencies
+/node_modules
+
+#Build
+/dist
+
+#Debug logs
+npm-debug.log*
+
+#Code coverage from `npm run coverage`
+/coverage
 
 
-npm-debug.log

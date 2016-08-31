@@ -1,16 +1,20 @@
 import React , { Component } from 'react';
-import $ from 'jquery';
-import { addCard } from '../../actions';
+import { addCardCall } from '../../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import $ from 'jquery';
+
+function mapStatetoProps({todoReducers}){
+  return {
+    label : todoReducers,
+  }
+}
 
 function mapDispatchToPros (dispatch) {
-  return bindActionCreators({
-    addCard : addCard,
-   },dispatch);
+  return bindActionCreators({ addCardCall : addCardCall },dispatch);
 }
 
 class CreatTodo extends Component {
@@ -46,25 +50,14 @@ class CreatTodo extends Component {
                 "name" : ""+todoName,
                 "body" : ""+todoBody
                 }
-    console.log(data);
-    $.ajax({
-       type: "POST",
-       url: "http://54.199.244.49/todo/note/",
-       dataType: 'json',
-       headers:{
-         'Authorization': "Token "+this.props.token,
-       },
-       data:JSON.stringify(data),
-       success: function(response) {
-         console.log("response-->",response);
-         this.handleReduce();
-        }.bind(this),
-       error: function(err) {
-         console.error('LABEL EDIT IS NOT WORKING',err);
-       }.bind(this)
-     });
+    this.props.addCardCall({
+      token : this.props.token,
+      data : data
+      });
+    this.handleReduce();
   }
   render(){
+    console.log('CreatTOdo ',this.props);
     return(
       <div>
         <br/>
@@ -72,10 +65,9 @@ class CreatTodo extends Component {
           <CardTitle  expandable={true}>
             <TextField
               id='todoName'
-              hintText="Title"
-            />
+              hintText="Title"/>
           </CardTitle>
-          <CardText onTouchTap={this.handleExpand}>
+          <CardText onClick={this.handleExpand}>
             <TextField
               multiLine={true}
               className='todo-body'
@@ -88,11 +80,11 @@ class CreatTodo extends Component {
             primary={true}
             id='doneBtn'
             className='done-btn'
-            onTouchTap={this.creatNote} />
+            onClick={this.creatNote} />
         </Card>
         <br/>
       </div>
     );
   }
 }
-export default connect(mapDispatchToPros) (CreatTodo);
+export default connect(mapStatetoProps, mapDispatchToPros ) (CreatTodo);

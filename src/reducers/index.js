@@ -1,5 +1,9 @@
-import { combineReducers } from 'redux';
-import dataReducers from "./dataReducers";
-import networkReducers from './networkReducers'
 
-export default  combineReducers({dataReducers,networkReducers});
+import { combineReducers } from 'redux';
+import todoReducers from "./todoReducers";
+import labelReducers from './labelReducers';
+
+export default  combineReducers({ 
+								todoReducers,
+								labelReducers,
+								});

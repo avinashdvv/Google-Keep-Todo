@@ -1,3 +1,12 @@
+v1.3.0 - August 22, 2016
+
+* 12c7ad9 Update: Add support for numeric and string literal types (fixes #156) (#172) (Andrew Walter)
+
+v1.2.3 - August 16, 2016
+
+* b96a884 Build: Add CI release script (Nicholas C. Zakas)
+* 8d9b3c7 Upgrade: Upgrade esutils to v2.0.2 (fixes #170) (#171) (Emeegeemee)
+
 v1.2.2 - May 19, 2016
 
 * ebe0b08 Fix: Support case insensitive tags (fixes #163) (#164) (alberto)

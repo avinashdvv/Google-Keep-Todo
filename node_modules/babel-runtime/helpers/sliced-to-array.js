@@ -1,13 +1,11 @@
 "use strict";
 
-var _isIterable = require("babel-runtime/core-js/is-iterable")["default"];
-
 var _getIterator = require("babel-runtime/core-js/get-iterator")["default"];
 
-exports["default"] = function (arr, i) {
-  if (Array.isArray(arr)) {
-    return arr;
-  } else if (_isIterable(Object(arr))) {
+var _isIterable = require("babel-runtime/core-js/is-iterable")["default"];
+
+exports["default"] = (function () {
+  function sliceIterator(arr, i) {
     var _arr = [];
     var _n = true;
     var _d = false;
@@ -31,9 +29,17 @@ exports["default"] = function (arr, i) {
     }
 
     return _arr;
-  } else {
-    throw new TypeError("Invalid attempt to destructure non-iterable instance");
   }
-};
+
+  return function (arr, i) {
+    if (Array.isArray(arr)) {
+      return arr;
+    } else if (_isIterable(Object(arr))) {
+      return sliceIterator(arr, i);
+    } else {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    }
+  };
+})();
 
 exports.__esModule = true;

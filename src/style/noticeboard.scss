@@ -1,7 +1,9 @@
 $base-bg-colr : rgb(232, 232, 232);
+body{
+	background: $base-bg-colr;
+}
 .notice-board{
   min-height: 500px;
-  background: $base-bg-colr;
 }
 .row{
   margin: 0px;

@@ -314,6 +314,7 @@ var Server = module.exports.Server = function (options) {
   var len = options.brokers.length;
   var firstTime = true;
   var startDebugPort = options.debug;
+  var startInspectPort = options.inspect;
 
   for (var i = 0; i < len; i++) {
     var launchServer = function (i) {
@@ -322,6 +323,7 @@ var Server = module.exports.Server = function (options) {
       dataServer = scBroker.createServer({
         id: i,
         debug: startDebugPort ? startDebugPort + i : null,
+        inspect: startInspectPort ? startInspectPort + i : null,
         instanceId: options.instanceId,
         socketPath: socketPath,
         secretKey: options.secretKey,

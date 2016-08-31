@@ -2,12 +2,9 @@ import React,{ Component } from 'react';
 import NavBar from './NavBar';
 import NoticeBoard from './NoticeBoard/NoticeBoard';
 import Label from './Label/Label';
-import { getToken } from '../actions';
-import $ from 'jquery';
+import { getTokenCall } from '../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-var injectTapEventPlugin = require("react-tap-event-plugin");
-injectTapEventPlugin();
 import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -15,19 +12,17 @@ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
 
-function mapStatetoProps({networkReducers}){
+function mapStatetoProps({todoReducers}){
   return {
-    token : networkReducers.token,
+    token : todoReducers.token,
   }
 }
-
 function mapDispatchToPros (dispatch) {
-  return bindActionCreators({ getTokenMethod : getToken},dispatch);
+  return bindActionCreators({ getTokenCall : getTokenCall},dispatch);
 }
 class App extends Component {
   constructor(props) {
     super(props);
-    this.data = this.props.networkReducer;
     this.getLogin = this.getLogin.bind(this);
     this.state = {
         open: false
@@ -41,27 +36,13 @@ class App extends Component {
     let password = this.refs.password.value;
     // let username = 'avinash';
     // let password = 'password';
-    $.ajax({
-       type: "POST",
-       url: "http://54.199.244.49/auth/login/",
-       dataType: 'json',
-       data: JSON.stringify({
-         username: username,
-         password: password
-       }),
-       dataType: 'json',
-       success: function(response) {
-         this.props.getTokenMethod(response.Token);
-         localStorage.setItem("token", response.Token);
-            this.setState({
-                open: false
-              });
-           console.log("response-->",response);
-        }.bind(this),
-       error: function(err) {
-         console.error('error',this.props);
-       }.bind(this)
-     });
+    this.props.getTokenCall({
+      username : username,
+      password : password
+    });
+        this.setState({
+            open: false
+          });
   }
 
   handleClose = () => {
@@ -80,14 +61,12 @@ class App extends Component {
       <FlatButton
         label="Cancel"
         primary={true}
-        onTouchTap={this.handleClose}
-      />,
+        onClick={this.handleClose}/>,
       <FlatButton
         label="Submit"
         primary={true}
         keyboardFocused={true}
-        onTouchTap={this.getLogin}
-      />,
+        onClick={this.getLogin}/>
     ];
     return(
       <div>

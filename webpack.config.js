@@ -15,9 +15,7 @@ module.exports = {
   },
 
   module: {
-    noParse: [
-      path.resolve('node_modules/quill/dist/quill.js') //npm 3
-    ],
+    noParse: /node_modules\/quill\/dist/,
     loaders: [
     /**
      This includes modules that we create in the babel loader
@@ -26,19 +24,14 @@ module.exports = {
      */
       {
         test: /\.js$/,
-        include: /@cdlo/,
-        loader: 'babel',
-        query: {
-          plugins: [ 'transform-runtime' , 'transform-decorators-legacy' ],
-          presets: [ 'react', 'es2015', "react-native"] }
-      },
-      {
-        test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel',
-        query: {
-          plugins: [ 'transform-runtime',"babel-plugin-transform-decorators-legacy"],
-          presets: [ 'react', 'es2015', "react-native"] }
+        query: { 
+                plugins: [ 'transform-runtime',
+                            'transform-decorators-legacy'
+                          ],
+                presets: [ 'react', 'es2015', "react-native" ] 
+              }
       },
       { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports?jQuery=jquery' },
       { test: /\.scss$/, loader: 'style!css!sass' },
@@ -53,8 +46,7 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: './',
-    hot: true,
-    port: 3000,
+    contentBase: './'
   }
 };
+

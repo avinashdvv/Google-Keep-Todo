@@ -1,10 +1,20 @@
 import '../style/navbar.scss';
 import React,{ Component } from 'react';
-import Select from 'react-select';
 import { connect } from 'react-redux';
 import { addCard } from '../actions';
 import { bindActionCreators } from 'redux';
 import AppBar from 'material-ui/AppBar';
+
+function mapStatetoProps({todoReducers}){
+  return {
+    id : todoReducers.id,
+    description:todoReducers.desc,
+    label: todoReducers.label
+  }
+}
+function mapDispatchToPros (dispatch) {
+  return bindActionCreators({creatCard : addCard},dispatch);
+}
 
 class NavBar extends Component {
   constructor(props) {
@@ -42,15 +52,5 @@ NavBar.childContextTypes = {
   muiTheme: React.PropTypes.object,
 };
 
-function mapStatetoProps({dataReducers}){
-  return {
-    id : dataReducers.id,
-    description:dataReducers.desc,
-    label: dataReducers.label
-  }
-}
-function mapDispatchToPros (dispatch) {
-  return bindActionCreators({creatCard : addCard},dispatch);
-}
 
 export default connect(mapStatetoProps, mapDispatchToPros) (NavBar);

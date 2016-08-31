@@ -3,55 +3,53 @@ import React,{ Component } from 'react';
 import $ from 'jquery';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getLabelAction } from '../../actions';
+import { getLabelCall } from '../../actions';
 import  EditLabel  from './EditLabel';
 import ActionLabel from 'react-material-icons/icons/action/label';
 
-function mapStatetoProps({networkReducers}){
+function mapStatetoProps({labelReducers}){
   return {
-    data : networkReducers.arrayData,
+    data : labelReducers.arrayData
   }
 }
 function mapDispatchToPros (dispatch) {
-  return bindActionCreators({ getLabelActionCall : getLabelAction},dispatch);
+  return bindActionCreators({ getLabelCall : getLabelCall},dispatch);
 }
 class Label extends Component {
   constructor(props) {
     super(props);
-    this.getLabel = this.getLabel.bind(this);
+    this.handleLabels = this.handleLabels.bind(this);
   }
-  getLabel(){
-    $.ajax({
-       type: "GET",
-       url: "http://54.199.244.49/todo/label/",
-       dataType: 'json',
-       headers: {
-         "Authorization": "Token "+this.props.token
-       },
-       success: function(response) {
-            this.props.getLabelActionCall(response);
-           console.log("response-->",response);
-        }.bind(this),
-       error: function(err) {
-         console.error('error',err);
-       }.bind(this)
-     });
+  componentDidMount() {
+    this.props.getLabelCall(this.props.token);
+  }
+  handleLabels(data) {
+    let labels;
+    if(data.length > 1){
+      console.log('LABEL DATA LENGHT >1 _____ ',data)
+      labels = data.map(function(value){
+                return(
+                  <li className='label-name' id={'label_'+value.id} key={'label_'+value.id}>
+                    <ActionLabel/>
+                    <span>{value.name}</span>
+                  </li>
+                  
+                )});
+    }else if ( data.length == 1 ){
+      console.log('LABEL DATA LENGHT <1 -------- ',data)
+        labels =  <li className='label-name' id={data[0].id} key={"label_"+data[0].id}>
+                      <ActionLabel/>
+                      <span>{data[0].name}</span>
+                  </li>
+    }else {
+      labels  = <div>
+                  NO LABELS
+                </div>
+    }
+    return labels;    
   }
   render(){
     console.log("labels-------------",this.props);
-    let labelId;
-    let labels = this.props.data.map(function(data){
-      labelId = data.id;
-      return(
-        <li className='label-name' id={data.id} >
-          <ActionLabel/>
-          <span>{data.name}</span>
-       </li>
-      )
-    });
-    if((this.props.token) && (!labelId)){
-      this.getLabel();
-    }
     return(
       <div className='label-list'>
         <div className='row label-options'>
@@ -60,7 +58,7 @@ class Label extends Component {
         </div>
         <div>
           <ul>
-            {labels}
+            {this.handleLabels(this.props.data)}
           </ul>
         </div>
       </div>

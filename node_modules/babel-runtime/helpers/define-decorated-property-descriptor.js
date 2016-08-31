@@ -9,7 +9,7 @@ exports["default"] = function (target, key, descriptors) {
 
   for (var _key in _descriptor) descriptor[_key] = _descriptor[_key];
 
-  descriptor.value = descriptor.initializer.call(target);
+  descriptor.value = descriptor.initializer ? descriptor.initializer.call(target) : undefined;
 
   _Object$defineProperty(target, key, descriptor);
 };
