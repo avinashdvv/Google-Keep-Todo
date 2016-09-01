@@ -80,9 +80,15 @@ class CreatTodo extends Component {
   handleNoteLabel(labelsData) {
     console.log('CreatTOdo+++++++',labelsData);
     let labels;
-    labels = labelsData.map(function(value){
+    if(labelsData.length >1){
+      labels = labelsData.map(function(value){
              return  { value: value.id , label: value.name }
-            })
+            })  
+    }else if(labelsData.length == 1){
+      labels = {value: labelsData[0].id, label: labelsData[0].name }
+    }else {
+      labels = []
+    }
     return labels
   }
   render(){
@@ -108,7 +114,7 @@ class CreatTodo extends Component {
                 name="form-field-name"
                 value={this.state.value}
                 multi={true}
-                options={this.handleNoteLabel(this.props.labelsData)}
+                options={this.handleNoteLabel(this.props.labelsData) || []}
                 onChange= {this.handleChange}/>
             <div ref='labelContainer'>
             </div>

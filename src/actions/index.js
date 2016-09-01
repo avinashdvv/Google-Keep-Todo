@@ -1,4 +1,7 @@
+import { hashHistory } from "react-router";
+
 import axios from 'axios';
+
 export const GET_TOKEN = 'GET_TOKEN';
 
 export const GET_TODO = 'GET_TODO';
@@ -103,11 +106,11 @@ export function getTokenCall(data) {
                 .then(function(response) {
                   console.log('GET TOKEN IS SUCCESS',response.data);
                   localStorage.setItem("token", response.data.Token);
-
                   dispatch(getToken(response.data.Token));
-                  dispatch(getCardsCall(response.data.Token));
-                  dispatch(getLabelCall(response.data.Token));
-
+                  hashHistory.push('/dashboard');
+                  
+                  // dispatch(getCardsCall(response.data.Token));
+                  // dispatch(getLabelCall(response.data.Token));
                 })
                 .catch(function(err){
                   console.error('GET TOKEN IS NOT WORKING',err);
@@ -265,8 +268,8 @@ export function editCardCall(value) {
                   dispatch( noteLabelManagement({
                               id : noteId,
                               token : value.token,
-                              addlabels : "",
-                              deleteLabels : value.labelsData
+                              addlabels : value.addLabelsData,
+                              deleteLabels : ""
                           }));
                 })
                 .catch(function(err){

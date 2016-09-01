@@ -3,6 +3,12 @@ $base-bg-colr : #FFBB00;
 .nav-bar{
   background-color: $base-bg-colr !important;
 }
+.login-page{
+	margin-top : 10% ;
+	padding: 50px;
+	background-color: white;
+	box-shadow: 1px 1px 1px lightgray;
+}
 .activity-icons{
   i{
     font-size: 40px;

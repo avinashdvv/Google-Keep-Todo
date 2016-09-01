@@ -1,20 +1,21 @@
 import React,{ Component } from 'react';
-import NavBar from './NavBar';
 import NoticeBoard from './NoticeBoard/NoticeBoard';
 import Label from './Label/Label';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { getTokenCall,
-         getCardsCall,
+import { getCardsCall,
          getLabelCall } from '../actions';
+import { hashHistory } from "react-router";
 
+import AppBar from 'material-ui/AppBar';
 import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-import injectTapEventPlugin from "react-tap-event-plugin";
+// import injectTapEventPlugin from "react-tap-event-plugin";
+
 function mapStatetoProps({ todoReducers, labelReducers}){
   return {
     token : todoReducers.token,
@@ -24,7 +25,6 @@ function mapStatetoProps({ todoReducers, labelReducers}){
 }
 function mapDispatchToPros (dispatch) {
   return bindActionCreators({
-       getTokenCall : getTokenCall,
        getCardsCall : getCardsCall,
        getLabelCall : getLabelCall
                           },dispatch);
@@ -32,74 +32,39 @@ function mapDispatchToPros (dispatch) {
 class App extends Component {
   constructor(props) {
     super(props);
-    injectTapEventPlugin();
-    this.getLogin = this.getLogin.bind(this);
-    this.state = {
-        open: false
-      }
+    // injectTapEventPlugin();
   }
   getChildContext() {
     return {muiTheme: getMuiTheme()};
   }
-  getLogin(e){
-    e.preventDefault();
-    let username = this.refs.username.value;
-    let password = this.refs.password.value;
-    this.props.getTokenCall({
-      username : username,
-      password : password
-    });
+  handleLogOut = () => {
+      localStorage.removeItem("token");
+      hashHistory.push('/');
   }
-
-  handleClose = () => {
-    this.setState({open: false});
-  };
-
-  componentWillMount(){
-    let token = localStorage.getItem("token");
-    if(!localStorage.getItem("token")){
-      this.setState({
-        open: true
-      })
-    }else{
-      this.props.getLabelCall(token);
+  componentWillMount() {
+    let token = localStorage.getItem("token")
+    if(token){
       this.props.getCardsCall(token);
+      this.props.getLabelCall(token);  
+    }else{
+      hashHistory.push('/');   
     }
   }
-  
   render(){
-    console.log("------------avinash",this.props);
-    let authToken = localStorage.getItem("token");
-    const actions = [
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onClick={this.handleClose}/>,
-      <FlatButton
-        label="Submit"
-        primary={true}
-        keyboardFocused={true}
-        onClick={this.getLogin}/>
-    ];
+    console.log("----APP----",this.props);
+    let button  = <RaisedButton label="LOGOUT" onClick={this.handleLogOut} secondary={true} />
     return(
       <div>
-          <NavBar token={this.props.token}/>
+          <AppBar
+          title="Google Keep"
+          iconElementRight = {button}
+          className='nav-bar'/>
           <div className='row'>
             <div className='col-md-3 side-panel'>
-              <Label token={authToken} labels = {this.props.labelsData}/>
+              <Label token={this.props.token} labels = {this.props.labelsData}/>
             </div>
             <div className='col-md-9 notice-board-container'>
-              <Dialog
-                title="User Login"
-                actions={actions}
-                modal={false}
-                open={this.state.open}
-                onRequestClose={this.handleClose}>
-                <input value='avinash' className='form-control' placeholder='username' ref='username'/>
-                <br/>
-                <input value='password' className='form-control' placeholder='password' ref='password'/>
-              </Dialog>
-                                                                                                        <NoticeBoard token={authToken} labelsData = {this.props.labelsData} cardsData={this.props.cardsData}/>
+              <NoticeBoard token={this.props.token} labelsData = {this.props.labelsData} cardsData={this.props.cardsData}/>
             </div>
         </div>
       </div>
