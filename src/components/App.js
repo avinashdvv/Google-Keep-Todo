@@ -52,6 +52,7 @@ class App extends Component {
   }
   render(){
     console.log("----APP----",this.props);
+    let token = localStorage.getItem("token")
     let button  = <RaisedButton label="LOGOUT" onClick={this.handleLogOut} secondary={true} />
     return(
       <div>
@@ -61,10 +62,10 @@ class App extends Component {
           className='nav-bar'/>
           <div className='row'>
             <div className='col-md-3 side-panel'>
-              <Label token={this.props.token} labels = {this.props.labelsData}/>
+              <Label token={token} labels = {this.props.labelsData}/>
             </div>
             <div className='col-md-9 notice-board-container'>
-              <NoticeBoard token={this.props.token} labelsData = {this.props.labelsData} cardsData={this.props.cardsData}/>
+              <NoticeBoard token={token} labelsData = {this.props.labelsData} cardsData={this.props.cardsData}/>
             </div>
         </div>
       </div>

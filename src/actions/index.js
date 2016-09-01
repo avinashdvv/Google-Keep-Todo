@@ -13,7 +13,7 @@ export const FETCH_LABELS = 'FETCH_LABELS';
 export const CREAT_LABEL = 'CREAT_LABEL';
 export const EDIT_LABEL = 'EDIT_LABEL';
 export const DEL_LABEL = 'DEL_LABEL';
-
+export const NOTE_LABEL_MANAGEMENT = 'NOTE_LABEL_MANAGEMENT';
 
 function getToken(token) {
   return {
@@ -87,7 +87,13 @@ function deleteCard(id) {
     id : id
   }
 }
-
+function noteLabelManagement(data){
+  console.log('DEL_TODO_ACTION',data);
+  return {
+    type : NOTE_LABEL_MANAGEMENT,
+    data : data
+  }
+}
 /*
  ASYNC CALL OF TOKEN
 */
@@ -105,8 +111,7 @@ export function getTokenCall(data) {
             axios(authOptions)
                 .then(function(response) {
                   console.log('GET TOKEN IS SUCCESS',response.data);
-                  localStorage.setItem("token", response.data.Token);
-                  dispatch(getToken(response.data.Token));
+                  dispatch(getToken(response.data.token));
                   hashHistory.push('/dashboard');
                   
                   // dispatch(getCardsCall(response.data.Token));
@@ -265,7 +270,7 @@ export function editCardCall(value) {
                       name : response.data.name,
                       body : response.data.body
                   }));
-                  dispatch( noteLabelManagement({
+                  dispatch( noteLabelManagementCall({
                               id : noteId,
                               token : value.token,
                               addlabels : value.addLabelsData,
@@ -295,12 +300,13 @@ export function addCardCall(value) {
                   console.log('@-----CARD CREATE IS SUCCESS',response.data);
                   noteId = response.data.id;
                   dispatch( addCard(response.data) );
-                  dispatch( noteLabelManagement({
+                  dispatch( noteLabelManagementCall({
                               id : noteId,
                               token : value.token,
                               addlabels : value.data.labelsData,
                               deleteLabels : ""
                           }));
+                  
                 })
                 .catch(function(err){
                   console.error('@------LABEL CREATE IS NOT WORKING',err);
@@ -308,7 +314,7 @@ export function addCardCall(value) {
          }
 }
 
-export function noteLabelManagement(data) {
+export function noteLabelManagementCall(data) {
   return function(dispatch) {
             console.log('noteLabelManagement---',data);
             let authOptions = {
@@ -316,7 +322,7 @@ export function noteLabelManagement(data) {
                 url: "http://54.199.244.49/todo/note/"+data.id+"/label/",
                 data:JSON.stringify({
                   "add": ""+data.addlabels,
-                  "remove": data.deleteLabels
+                  "remove": ""+data.deleteLabels
                 }),
                 headers: {
                  "Authorization": "Token "+data.token
@@ -325,6 +331,7 @@ export function noteLabelManagement(data) {
             }
             axios(authOptions)
                 .then(function(response) {
+                  dispatch(noteLabelManagement(response.data));
                   console.log('LABEL CREATE IS SUCCESS',response);
                 })
                 .catch(function(err){

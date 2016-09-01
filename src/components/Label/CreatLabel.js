@@ -5,11 +5,7 @@ import { creatLabelCall } from '../../actions';
 
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
-function mapStatetoProps({labelReducers}){
-  return {
-    label : labelReducers.label,
-  }
-}
+
 function mapDispatchToPros (dispatch) {
   return bindActionCreators({ creatLabelCall : creatLabelCall },dispatch);
 }
@@ -21,6 +17,7 @@ class CreatLabel extends Component {
   }
 
   makeLabel(event){
+    console.log('MAKE LABEL',this.props)
     let labe = document.getElementById('newLabel').value;
     this.props.creatLabelCall({
       label: labe,
@@ -49,4 +46,4 @@ class CreatLabel extends Component {
 }
 
 
-export default connect(mapStatetoProps, mapDispatchToPros)(CreatLabel);
+export default connect(null, mapDispatchToPros)(CreatLabel);

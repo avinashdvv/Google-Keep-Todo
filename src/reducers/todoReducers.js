@@ -4,6 +4,7 @@ import {
         ADD_TODO,
         EDIT_TODO,
         DEL_TODO,
+        NOTE_LABEL_MANAGEMENT
       } from '../actions';
 export default function(state = {
   notesData : [],
@@ -11,6 +12,7 @@ export default function(state = {
 }, action){
   switch (action.type) {
     case GET_TOKEN : {
+       localStorage.setItem("token", action.token);
        return {
                ...state,
                token : action.token
@@ -60,6 +62,20 @@ export default function(state = {
         ...state,
         notesData : updatedArray
       }
+    }
+    case NOTE_LABEL_MANAGEMENT: {
+      console.log('NOTE_LABEL_MANAGEMENT',state,action)
+      let updatedArray = []
+      state.notesData.map((value)=>{
+          if(value.id == action.data.id){
+            value.labels = action.data.labels
+          }
+          updatedArray.push(value);
+      })
+      return {
+              ...state,
+              notesData : updatedArray
+             }
     }
     default:
       return state;

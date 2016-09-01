@@ -7,12 +7,7 @@ import Dialog from 'material-ui/Dialog';
 import CreatLabel  from './CreatLabel';
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
-import $ from 'jquery';
-function mapStatetoProps({labelReducers}){
-  return {
-    label : labelReducers
-  }
-}
+
 function mapDispatchToPros (dispatch) {
   return bindActionCreators({
      editLabelCall : editLabelCall,
@@ -142,4 +137,4 @@ class EditLabel extends Component {
   }
 }
 
-export default connect( mapStatetoProps, mapDispatchToPros)(EditLabel);
+export default connect( null, mapDispatchToPros)(EditLabel);

@@ -114,7 +114,7 @@ class CreatTodo extends Component {
                 name="form-field-name"
                 value={this.state.value}
                 multi={true}
-                options={this.handleNoteLabel(this.props.labelsData) || []}
+                options={this.handleNoteLabel(this.props.labelsData)}
                 onChange= {this.handleChange}/>
             <div ref='labelContainer'>
             </div>

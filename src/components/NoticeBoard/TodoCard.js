@@ -118,7 +118,7 @@ class TodoCard extends Component {
                                         name="form-field-.pname"
                                         value ={this.state.labelValue}
                                         multi={true}
-                                        options={this.handleNoteLabel(this.props.labelsData) || []}
+                                        options={this.handleNoteLabel(this.props.labelsData)}
                                         onChange= {this.handleLabelChange}/>,
                                       <RaisedButton label="EDIT" primary={true}
                                         onClick={tiggerEditCard}/>,
@@ -139,6 +139,7 @@ class TodoCard extends Component {
                               <br/>
                               labeles :{
                                 value.labels.map((op)=>{
+                                  console.log('################',op)
                                   return op.name+" "
                                 })
                               }
