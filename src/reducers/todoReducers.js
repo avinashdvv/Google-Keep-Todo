@@ -7,7 +7,7 @@ import {
       } from '../actions';
 export default function(state = {
   notesData : [],
-  token : ''
+  token : '',
 }, action){
   switch (action.type) {
     case GET_TOKEN : {

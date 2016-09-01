@@ -1,27 +1,13 @@
 import '../../style/label.scss';
 import React,{ Component } from 'react';
-import $ from 'jquery';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { getLabelCall } from '../../actions';
 import  EditLabel  from './EditLabel';
 import ActionLabel from 'react-material-icons/icons/action/label';
 
-function mapStatetoProps({labelReducers}){
-  return {
-    data : labelReducers.arrayData
-  }
-}
-function mapDispatchToPros (dispatch) {
-  return bindActionCreators({ getLabelCall : getLabelCall},dispatch);
-}
+
 class Label extends Component {
   constructor(props) {
     super(props);
     this.handleLabels = this.handleLabels.bind(this);
-  }
-  componentDidMount() {
-    this.props.getLabelCall(this.props.token);
   }
   handleLabels(data) {
     let labels;
@@ -54,11 +40,11 @@ class Label extends Component {
       <div className='label-list'>
         <div className='row label-options'>
           <label className='col-md-6 label-heading text-left'>labels:</label>
-          <EditLabel token= {this.props.token} labelDetails={this.props.data}/>
+          <EditLabel token= {this.props.token} labelDetails={this.props.labels}/>
         </div>
         <div>
           <ul>
-            {this.handleLabels(this.props.data)}
+            {this.handleLabels(this.props.labels)}
           </ul>
         </div>
       </div>
@@ -66,4 +52,4 @@ class Label extends Component {
   }
 }
 
-export default connect(mapStatetoProps, mapDispatchToPros) (Label);
+export default Label;

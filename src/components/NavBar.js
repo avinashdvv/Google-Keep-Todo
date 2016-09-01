@@ -1,27 +1,14 @@
 import '../style/navbar.scss';
 import React,{ Component } from 'react';
-import { connect } from 'react-redux';
-import { addCard } from '../actions';
-import { bindActionCreators } from 'redux';
 import AppBar from 'material-ui/AppBar';
+import RaisedButton from 'material-ui/RaisedButton';
 
-function mapStatetoProps({todoReducers}){
-  return {
-    id : todoReducers.id,
-    description:todoReducers.desc,
-    label: todoReducers.label
-  }
-}
-function mapDispatchToPros (dispatch) {
-  return bindActionCreators({creatCard : addCard},dispatch);
-}
 
 class NavBar extends Component {
   constructor(props) {
     super(props);
     this.openModal = this.openModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
-    this.creatCard = this.props.creatCard;
     this.state = {
       modalIsOpen: false,
     }
@@ -35,14 +22,18 @@ class NavBar extends Component {
   }
 
   render(){
-    const {onCompleteTask, tasks } = this.props;
+    let button;
+    if(this.props.token){
+        button =  <RaisedButton label="Secondary" secondary={true} />
+    }else{
+        button =  <RaisedButton label="Secondary" primary={true} />
+    }
    return(
       <div>
         <AppBar
         title="Google Keep"
-        iconClassNameRight="muidocs-icon-navigation-expand-more"
-        className='nav-bar'
-      />
+        iconElementRight = {button}
+        className='nav-bar'/>
       </div>
     );
   }
@@ -53,4 +44,4 @@ NavBar.childContextTypes = {
 };
 
 
-export default connect(mapStatetoProps, mapDispatchToPros) (NavBar);
+export default NavBar;

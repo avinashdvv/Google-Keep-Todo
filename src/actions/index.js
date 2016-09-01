@@ -1,5 +1,3 @@
-import $ from 'jquery';
-import fetch from 'isomorphic-fetch';
 import axios from 'axios';
 export const GET_TOKEN = 'GET_TOKEN';
 
@@ -79,20 +77,21 @@ function editCard(object) {
     }
   }
 }
-export function deleteCard(id) {
+function deleteCard(id) {
   console.log('DEL_TODO_ACTION');
   return{
     type: DEL_TODO,
     id : id
   }
 }
+
 /*
  ASYNC CALL OF TOKEN
 */
 export function getTokenCall(data) {
   return function (dispatch) {
             var authOptions = {
-                method : 'GET',
+                method : 'POST',
                  url: "http://54.199.244.49/auth/login/",
                  data: JSON.stringify({
                    username: data.username,
@@ -102,12 +101,16 @@ export function getTokenCall(data) {
             }
             axios(authOptions)
                 .then(function(response) {
-                  console.error('FETCH_LABELS IS SUCCESS',response.data);
-                  dispatch(getToken(response.data.Token));
+                  console.log('GET TOKEN IS SUCCESS',response.data);
                   localStorage.setItem("token", response.data.Token);
+
+                  dispatch(getToken(response.data.Token));
+                  dispatch(getCardsCall(response.data.Token));
+                  dispatch(getLabelCall(response.data.Token));
+
                 })
                 .catch(function(err){
-                  console.error('FETCH_LABELS EDIT IS NOT WORKING',err);
+                  console.error('GET TOKEN IS NOT WORKING',err);
                 })
             }
 }
@@ -126,7 +129,7 @@ export function getLabelCall(token) {
             }
             axios(authOptions)
                 .then(function(response) {
-                  console.error('FETCH_LABELS IS SUCCESS',response.data);
+                  console.log('FETCH_LABELS IS SUCCESS',response.data);
                   dispatch(getLabel(response.data));
                 })
                 .catch(function(err){
@@ -149,7 +152,7 @@ export function editLabelCall(data) {
             }
             axios(authOptions)
                 .then(function(response) {
-                  console.error('LABEL EDIT IS SUCCESS',response.data);
+                  console.log('LABEL EDIT IS SUCCESS',response.data);
                   dispatch(editLabel({
                       id : response.data.id,
                       name : response.data.name
@@ -176,7 +179,7 @@ export function creatLabelCall(data) {
             }
             axios(authOptions)
                 .then(function(response) {
-                  console.error('LABEL CREATE IS SUCCESS',response.data);
+                  console.log('LABEL CREATE IS SUCCESS',response.data);
                   dispatch(creatLabel(response.data));
                 })
                 .catch(function(err){
@@ -200,7 +203,7 @@ export function deleteLabelCall(data) {
             }
             axios(authOptions)
                 .then(function(response) {
-                  console.error('LABEL CREATE IS SUCCESS',response);
+                  console.log('LABEL CREATE IS SUCCESS',response);
                   dispatch(deleteLabel(data.id));
                 })
                 .catch(function(err){
@@ -224,7 +227,7 @@ export function getCardsCall(token) {
             }
             axios(authOptions)
                 .then(function(response) {
-                  console.error('@---FETCH_CARDS IS SUCCESS',response.data);
+                  console.log('@---FETCH_CARDS IS SUCCESS',response.data);
                   dispatch(getCards(response.data));
                 })
                 .catch(function(err){
@@ -235,6 +238,8 @@ export function getCardsCall(token) {
 
 export function editCardCall(value) {
   return function (dispatch) {
+            console.log(value)
+            let noteId = null;
             var authOptions = {
                 method : 'POST',
                 url: "http://54.199.244.49/todo/note/"+value.id+"/",
@@ -251,11 +256,18 @@ export function editCardCall(value) {
             axios(authOptions)
                 .then(function(response) {
                   console.log("@---EDIT CARD SUCCESS",response.data);
+                  noteId = response.data.id;
                   dispatch( editCard({
                       id : response.data.id,
                       name : response.data.name,
                       body : response.data.body
                   }));
+                  dispatch( noteLabelManagement({
+                              id : noteId,
+                              token : value.token,
+                              addlabels : "",
+                              deleteLabels : value.labelsData
+                          }));
                 })
                 .catch(function(err){
                   console.error('LABEL EDIT IS NOT WORKING',err);
@@ -264,23 +276,56 @@ export function editCardCall(value) {
 }
 export function addCardCall(value) {
   return function(dispatch) {
-            var authOptions = {
+          let noteId = null;
+          let authOptions = {
                 method : 'POST',
                 url: "http://54.199.244.49/todo/note/",
                 dataType: 'json',
                 headers:{
                    'Authorization': "Token "+value.token,
                 },
-                 data:JSON.stringify(value.data),
+                data:JSON.stringify(value.data.body),
                 json : true
             }
             axios(authOptions)
                 .then(function(response) {
-                  console.error('@-----LABEL CREATE IS SUCCESS',response.data);
-                  dispatch( addCard(response.data));
+                  console.log('@-----CARD CREATE IS SUCCESS',response.data);
+                  noteId = response.data.id;
+                  dispatch( addCard(response.data) );
+                  dispatch( noteLabelManagement({
+                              id : noteId,
+                              token : value.token,
+                              addlabels : value.data.labelsData,
+                              deleteLabels : ""
+                          }));
                 })
                 .catch(function(err){
                   console.error('@------LABEL CREATE IS NOT WORKING',err);
+                })
+         }
+}
+
+export function noteLabelManagement(data) {
+  return function(dispatch) {
+            console.log('noteLabelManagement---',data);
+            let authOptions = {
+                method : 'POST',
+                url: "http://54.199.244.49/todo/note/"+data.id+"/label/",
+                data:JSON.stringify({
+                  "add": ""+data.addlabels,
+                  "remove": data.deleteLabels
+                }),
+                headers: {
+                 "Authorization": "Token "+data.token
+                },
+                json : true
+            }
+            axios(authOptions)
+                .then(function(response) {
+                  console.log('LABEL CREATE IS SUCCESS',response);
+                })
+                .catch(function(err){
+                  console.error('LABEL CREATE IS NOT WORKING',err);
                 })
          }
 }
@@ -297,7 +342,7 @@ export function deleteCardCall(data) {
             }
             axios(authOptions)
                 .then(function(response) {
-                  console.error('LABEL CREATE IS SUCCESS',response);
+                  console.log('LABEL CREATE IS SUCCESS',response);
                   dispatch( deleteCard(data.id));
                 })
                 .catch(function(err){

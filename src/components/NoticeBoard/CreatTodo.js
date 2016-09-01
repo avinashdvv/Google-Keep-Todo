@@ -1,32 +1,35 @@
 import React , { Component } from 'react';
-import { addCardCall } from '../../actions';
+import { addCardCall,noteLabelManagement } from '../../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
-import $ from 'jquery';
+import Chip from 'material-ui/Chip';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 
-function mapStatetoProps({todoReducers}){
-  return {
-    label : todoReducers,
-  }
-}
 
 function mapDispatchToPros (dispatch) {
-  return bindActionCreators({ addCardCall : addCardCall },dispatch);
+  return bindActionCreators({ 
+                              addCardCall : addCardCall,
+                              noteLabelManagement: noteLabelManagement 
+                            },dispatch);
 }
 
 class CreatTodo extends Component {
   constructor(props) {
     super(props);
     this.token = this.props.token;
+    this.handleNoteLabel = this.handleNoteLabel.bind(this);
     this.creatNote = this.creatNote.bind(this);
     this.state = {
-      expanded: false
+      expanded: false,
+      value  : null
     }
   }
-
+  
   handleExpandChange = (expanded) => {
     this.setState({expanded: expanded});
   };
@@ -43,21 +46,46 @@ class CreatTodo extends Component {
   handleReduce = () => {
     this.setState({expanded: false});
   };
-  creatNote(){
+
+  handleChange = (value) =>{
+    this.setState({
+      value : value
+    });
+    console.log(this.state.value)
+  }
+  
+  creatNote(event) {
+    event.preventDefault()
     let todoName = document.getElementById('todoName').value;
     let todoBody = document.getElementById('todoBody').value;
+    let labels = "";
+    let addlabels = this.state.value.map(function(value){
+        labels += value.value+","
+       return labels
+    })
     let data = {
-                "name" : ""+todoName,
-                "body" : ""+todoBody
-                }
+                body : {
+                          "name" : ""+todoName,
+                          "body" : ""+todoBody,
+                        },          
+                labelsData : labels.slice(0,-1)
+                } 
+   
     this.props.addCardCall({
       token : this.props.token,
       data : data
       });
     this.handleReduce();
   }
+  handleNoteLabel(labelsData) {
+    console.log('CreatTOdo+++++++',labelsData);
+    let labels;
+    labels = labelsData.map(function(value){
+             return  { value: value.id , label: value.name }
+            })
+    return labels
+  }
   render(){
-    console.log('CreatTOdo ',this.props);
     return(
       <div>
         <br/>
@@ -72,19 +100,29 @@ class CreatTodo extends Component {
               multiLine={true}
               className='todo-body'
               id='todoBody'
-              hintText="Take a note"
-            ></TextField>
+              hintText="Take a note">
+            </TextField>
           </CardText>
-          <RaisedButton
-            label="done"
-            primary={true}
-            id='doneBtn'
-            className='done-btn'
-            onClick={this.creatNote} />
+          <div className='note-option-container'>
+            <Select
+                name="form-field-name"
+                value={this.state.value}
+                multi={true}
+                options={this.handleNoteLabel(this.props.labelsData)}
+                onChange= {this.handleChange}/>
+            <div ref='labelContainer'>
+            </div>
+            <RaisedButton
+              label="done"
+              primary={true}
+              id='doneBtn'
+              className='done-btn'
+              onClick={this.creatNote} />
+          </div>
         </Card>
         <br/>
       </div>
     );
   }
 }
-export default connect(mapStatetoProps, mapDispatchToPros ) (CreatTodo);
+export default connect(null, mapDispatchToPros ) (CreatTodo);

@@ -3,11 +3,13 @@ import {Card, CardHeader, CardText } from 'material-ui/Card';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import $ from 'jquery';
 import { deleteCardCall , editCardCall } from '../../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import TextField from 'material-ui/TextField';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
+
 
 function mapStatetoProps({todoReducers}){
   return {
@@ -27,7 +29,8 @@ class TodoCard extends Component {
     this.handleCards = this.handleCards.bind(this);
     this.state = {
       open : false,
-      value: 'Property Value'
+      value: 'Property Value',
+      labelValue : null,
     }
   }
 
@@ -38,11 +41,7 @@ class TodoCard extends Component {
       value: value
     });
   };
-  handleChange(event){
-    this.setState({
-      value: event.target.value,
-    });
-  }
+  
   handleClose(){
     this.setState({open: false});
   };
@@ -54,11 +53,17 @@ class TodoCard extends Component {
   editCard(value, e){
     console.log('editCard ', value);
     let body = document.getElementById('body_'+value.id).value;
+    let labels = "";
+    let deletelabels = this.state.labelValue.map(function(value){
+        labels += value.value+","
+       return labels
+    })
     this.props.editCardCall({
       token : this.token,
       id : value.id,
       name: value.name,
-      body : body
+      body : body,
+      labelsData : labels.slice(0,-1)
     })
   }
   deleteCard(cardId,e){
@@ -67,6 +72,25 @@ class TodoCard extends Component {
       id: cardId
     })
      this.handleClose();
+  }
+  handleLabelChange = (value) => {
+    this.setState({
+      labelValue : value
+    });    
+  }
+
+  handleNoteLabel(labelsData) {
+    let labels;
+    if(labelsData.length >1){
+      labels = labelsData.map(function(value){
+             return  { value: value.id , label: value.name }
+            })
+    }else if (labelsData.length == 1){
+      labels = {value: labelsData[0].id,label: labelsData[0].name}
+    }else{
+      labels = null
+    }
+    return labels
   }
   dialogCard = (value) =>{
     let tiggerDeleteCard = this.deleteCard.bind(this, value.id);
@@ -79,6 +103,12 @@ class TodoCard extends Component {
       margin:'0 auto'
     };
     const actions = [
+        <Select
+              name="form-field-name"
+              value={this.state.labelValue}
+              multi={true}
+              options={this.handleNoteLabel(this.props.labelsData)}
+              onChange= {this.handleLabelChange}/>,
         <RaisedButton label="EDIT" primary={true}
           onClick={tiggerEditCard}/>,
         <RaisedButton label="DELETE" secondary={true}
@@ -98,8 +128,10 @@ class TodoCard extends Component {
                   value={this.state.value}
                   onChange={tiggerHandleChange}
                   id={'body_'+value.id}/>
+                            
       </Dialog>)
   }
+
   handleCards() {
     let cards = this.props.cardsData.map((value) => {
       let tiggerExpandCard = this.handleOpen.bind(this, value.body);
@@ -108,9 +140,17 @@ class TodoCard extends Component {
               <Card>
                 <CardHeader
                   title={value.name}
-                  subtitle={value.body}
                   onClick={tiggerExpandCard}>
                 </CardHeader>
+                <CardText>
+                  {value.body}
+                  <br/>
+                  labeles :{
+                    this.props.labelsData.map((labels)=>{
+                      return labels.name+" "
+                    })
+                  }
+                </CardText>
               </Card>
               {this.dialogCard(value)}
               <br/>

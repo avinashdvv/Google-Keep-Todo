@@ -10,10 +10,7 @@ import {
     } from '../actions';
 
 export default function ( state = {
-  data : '',
   arrayData : [],
-  token : '',
-  label : '',
  }, action){
    switch (action.type) {
 

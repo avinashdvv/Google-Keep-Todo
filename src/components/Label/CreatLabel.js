@@ -2,7 +2,7 @@ import React,{ Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { creatLabelCall } from '../../actions';
-import $ from 'jquery';
+
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
 function mapStatetoProps({labelReducers}){
@@ -37,6 +37,7 @@ class CreatLabel extends Component {
             ref="newLabel"
             hintText="Creat new label">
           </TextField>
+          
           <IconButton
             iconClassName="material-icons"
             tooltip="Ligature"

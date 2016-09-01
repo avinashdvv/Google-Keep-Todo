@@ -2,27 +2,37 @@ import React,{ Component } from 'react';
 import NavBar from './NavBar';
 import NoticeBoard from './NoticeBoard/NoticeBoard';
 import Label from './Label/Label';
-import { getTokenCall } from '../actions';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { getTokenCall,
+         getCardsCall,
+         getLabelCall } from '../actions';
+
 import RaisedButton from 'material-ui/RaisedButton';
 import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Dialog from 'material-ui/Dialog';
-
-function mapStatetoProps({todoReducers}){
+import injectTapEventPlugin from "react-tap-event-plugin";
+function mapStatetoProps({ todoReducers, labelReducers}){
   return {
     token : todoReducers.token,
+    cardsData : todoReducers.notesData,
+    labelsData : labelReducers.arrayData
   }
 }
 function mapDispatchToPros (dispatch) {
-  return bindActionCreators({ getTokenCall : getTokenCall},dispatch);
+  return bindActionCreators({
+       getTokenCall : getTokenCall,
+       getCardsCall : getCardsCall,
+       getLabelCall : getLabelCall
+                          },dispatch);
 }
 class App extends Component {
   constructor(props) {
     super(props);
+    injectTapEventPlugin();
     this.getLogin = this.getLogin.bind(this);
     this.state = {
         open: false
@@ -31,31 +41,34 @@ class App extends Component {
   getChildContext() {
     return {muiTheme: getMuiTheme()};
   }
-  getLogin(){
+  getLogin(e){
+    e.preventDefault();
     let username = this.refs.username.value;
     let password = this.refs.password.value;
-    // let username = 'avinash';
-    // let password = 'password';
     this.props.getTokenCall({
       username : username,
       password : password
     });
-        this.setState({
-            open: false
-          });
   }
 
   handleClose = () => {
     this.setState({open: false});
   };
-  componentDidMount(){
+
+  componentWillMount(){
+    let token = localStorage.getItem("token");
     if(!localStorage.getItem("token")){
       this.setState({
         open: true
       })
+    }else{
+      this.props.getLabelCall(token);
+      this.props.getCardsCall(token);
     }
   }
+  
   render(){
+    console.log("------------avinash",this.props);
     let authToken = localStorage.getItem("token");
     const actions = [
       <FlatButton
@@ -70,10 +83,10 @@ class App extends Component {
     ];
     return(
       <div>
-          <NavBar />
+          <NavBar token={this.props.token}/>
           <div className='row'>
             <div className='col-md-3 side-panel'>
-              <Label token={authToken}/>
+              <Label token={authToken} labels = {this.props.labelsData}/>
             </div>
             <div className='col-md-9 notice-board-container'>
               <Dialog
@@ -81,13 +94,12 @@ class App extends Component {
                 actions={actions}
                 modal={false}
                 open={this.state.open}
-                onRequestClose={this.handleClose}
-                >
-                <input className='form-control' placeholder='username' ref='username'/>
+                onRequestClose={this.handleClose}>
+                <input value='avinash' className='form-control' placeholder='username' ref='username'/>
                 <br/>
-                <input className='form-control' placeholder='password' ref='password'/>
+                <input value='password' className='form-control' placeholder='password' ref='password'/>
               </Dialog>
-              <NoticeBoard token={authToken}/>
+                                                                                                        <NoticeBoard token={authToken} labelsData = {this.props.labelsData} cardsData={this.props.cardsData}/>
             </div>
         </div>
       </div>
