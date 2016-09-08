@@ -59,10 +59,13 @@ class CreatTodo extends Component {
     let todoName = document.getElementById('todoName').value;
     let todoBody = document.getElementById('todoBody').value;
     let labels = "";
-    let addlabels = this.state.value.map(function(value){
-        labels += value.value+","
-       return labels
-    })
+    let addlabels 
+    if(this.state.value.length > 1){
+      addlabels= this.state.value.map(function(value){
+          labels += value.value+","
+         return labels
+      })
+    }
     let data = {
                 body : {
                           "name" : ""+todoName,
@@ -77,21 +80,22 @@ class CreatTodo extends Component {
       });
     this.handleReduce();
   }
-  handleNoteLabel(labelsData) {
-    console.log('CreatTOdo+++++++',labelsData);
-    let labels;
+  handleNoteLabel() {
+    let labelsData = this.props.labelsData;
+    let labels = [];
     if(labelsData.length >1){
-      labels = labelsData.map(function(value){
-             return  { value: value.id , label: value.name }
-            })  
+      labelsData.map(function(value){
+             labels.push({ value: value.id , label: value.name })
+      })
     }else if(labelsData.length == 1){
-      labels = {value: labelsData[0].id, label: labelsData[0].name }
-    }else {
-      labels = []
+      labels.push({value: labelsData[0].id, label: labelsData[0].name })
+    }else{
+      labels.push({value: null, label: null})
     }
     return labels
   }
   render(){
+    console.log('create todo', this.props)
     return(
       <div>
         <br/>
@@ -114,7 +118,7 @@ class CreatTodo extends Component {
                 name="form-field-name"
                 value={this.state.value}
                 multi={true}
-                options={this.handleNoteLabel(this.props.labelsData)}
+                options={this.handleNoteLabel()}
                 onChange= {this.handleChange}/>
             <div ref='labelContainer'>
             </div>

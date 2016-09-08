@@ -20,7 +20,10 @@ function mapStatetoProps({ todoReducers, labelReducers}){
   return {
     token : todoReducers.token,
     cardsData : todoReducers.notesData,
-    labelsData : labelReducers.arrayData
+    labelsData : labelReducers.arrayData,
+    isCardsFetching : todoReducers.isfetching,
+    isLabelFetching : labelReducers.isFetchStart,
+    isLabelFetchingFailed : labelReducers.isFetchFailed
   }
 }
 function mapDispatchToPros (dispatch) {
@@ -42,8 +45,9 @@ class App extends Component {
       hashHistory.push('/');
   }
   componentWillMount() {
-    let token = localStorage.getItem("token")
-    if(token){
+
+    let token = localStorage.getItem("token");
+    if(token.length > 1){
       this.props.getCardsCall(token);
       this.props.getLabelCall(token);  
     }else{
@@ -62,10 +66,13 @@ class App extends Component {
           className='nav-bar'/>
           <div className='row'>
             <div className='col-md-3 side-panel'>
-              <Label token={token} labels = {this.props.labelsData}/>
+              <Label token={token}
+                isLabelFetching = {this.props.isLabelFetching}
+                isLabelFetchingFailed = {this.props.isLabelFetchingFailed}
+                labels = {this.props.labelsData}/>
             </div>
             <div className='col-md-9 notice-board-container'>
-              <NoticeBoard token={token} labelsData = {this.props.labelsData} cardsData={this.props.cardsData}/>
+              <NoticeBoard token={token} isCardsFetching={this.props.isCardsFetching} labelsData = {this.props.labelsData} cardsData={this.props.cardsData}/>
             </div>
         </div>
       </div>

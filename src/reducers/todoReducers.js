@@ -1,28 +1,55 @@
 import {
         GET_TOKEN,
+        NOTE_FETCH_CARDS_START,
+        NOTE_FETCH_FAILED,
         GET_TODO ,
         ADD_TODO,
         EDIT_TODO,
         DEL_TODO,
-        NOTE_LABEL_MANAGEMENT
+        NOTE_LABEL_MANAGEMENT,
+        NOTE_LABEL_EDIT_MANAGEMENT,
+        NOTE_LABEL_DEL_MANAGEMENT
       } from '../actions';
 export default function(state = {
   notesData : [],
   token : '',
+  isfetching : false,
+  isFetchingFailed : {
+    type : '',
+    data : ''
+  }
 }, action){
   switch (action.type) {
     case GET_TOKEN : {
-       localStorage.setItem("token", action.token);
        return {
                ...state,
                token : action.token
               }
      }
+    case NOTE_FETCH_CARDS_START : {
+      return {
+        ...state,
+        isfetching : true
+      }
+    }
+    case NOTE_FETCH_FAILED : {
+      console.error('NOTE_FETCH_FAILED',action.data)
+      let repo;
+      if(action.data.type = 'GET_TODO'){
+        repo = JSON.parse(action.data.error)
+      }else{
+        repo = action.data
+      }
+      return {
+        ...state,
+        isFetchingFailed : repo
+      }
+    }
     case GET_TODO:{
       console.log('GET_TODO_REDUCER',state,action);
       return{
               ...state,
-              notesData : action.payload.data,
+              notesData : action.payload.data
             }
     }
     case ADD_TODO:{
@@ -72,10 +99,53 @@ export default function(state = {
           }
           updatedArray.push(value);
       })
+
       return {
               ...state,
               notesData : updatedArray
              }
+    }
+    case NOTE_LABEL_EDIT_MANAGEMENT: {
+      console.log('NOTE_LABEL_EDIT_MANAGEMENT',state,action);
+      let updatedArray = [];
+      state.notesData.map((value) =>{
+        if(value.labels.length > 1){
+          value.labels.map((label) =>{
+            if(label.id == action.data.id){
+              label.name = action.data.name
+            }
+          })
+        }else if(value.labels.length == 1){
+          value.labels[0].name = action.data.name
+        }
+        updatedArray.push(value);
+      });
+      return {
+        ...state,
+        notesData : updatedArray
+      }
+    }
+    case NOTE_LABEL_DEL_MANAGEMENT: {
+      console.log('NOTE_LABEL_DEL_MANAGEMENT',state,action);
+      let updatedArray = [];
+      state.notesData.map((value) =>{
+        updatedArray.push(value);
+      })
+      updatedArray.map((value) =>{
+        let updatedLabels;
+        if(value.labels.length > 1 ){
+            updatedLabels = value.labels.filter(function(el) {
+              return el.id !== action.data;
+            });
+        }else{
+            value.labels.pop();
+        }
+        value.labels = updatedLabels;
+      });
+      return {
+        ...state,
+        notesData : updatedArray
+      }
     }
     default:
       return state;

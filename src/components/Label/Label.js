@@ -27,15 +27,29 @@ class Label extends Component {
                       <ActionLabel/>
                       <span>{data[0].name}</span>
                   </li>
-    }else {
-      labels  = <div>
-                  NO LABELS
-                </div>
+    }else{
+      if(this.props.isLabelFetchingFailed.length < 1){
+        labels  = <div>
+                    NO LABELS
+                  </div>
+      }
+    }
+    if(this.props.isLabelFetchingFailed.length > 1){
+      document.getElementById('error').innerHTML = this.props.isLabelFetchingFailed || null
     }
     return labels;    
   }
+  
   render(){
-    console.log("labels-------------",this.props);
+
+    let labels;
+    if(this.props.isLabelFetching){
+      labels = this.handleLabels(this.props.labels);
+    }else{
+      labels = 'Loading .....'
+    }
+    
+        
     return(
       <div className='label-list'>
         <div className='row label-options'>
@@ -43,8 +57,10 @@ class Label extends Component {
           <EditLabel token= {this.props.token} labelDetails={this.props.labels}/>
         </div>
         <div>
+        <div id='error'>
+        </div>
           <ul>
-            {this.handleLabels(this.props.labels)}
+            {labels}
           </ul>
         </div>
       </div>

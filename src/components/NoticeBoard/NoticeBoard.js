@@ -6,15 +6,23 @@ import { bindActionCreators } from 'redux';
 import TodoCard from './TodoCard';
 import CreatTodo from './CreatTodo';
 
-const NoticeBoard = (props) => 
-      <div className='notice-board'>
+
+const NoticeBoard = (props) => {
+	let board;
+	if(!props.isCardsFetching){
+		board = 'Loading .......'
+	}else{
+		board = <TodoCard token={props.token} labelsData={props.labelsData} cardsData={props.cardsData}/>
+	}
+ return(
+ 	 <div className='notice-board'>
         <div className='row'>
             <div className="col-md-offset-3 col-md-7">
               <CreatTodo token={props.token} labelsData={props.labelsData}/>
             </div>
         </div>
-        <TodoCard token={props.token} labelsData={props.labelsData} cardsData={props.cardsData}/>
+        {board}
       </div>
-
-
+  )
+}
 export default NoticeBoard;

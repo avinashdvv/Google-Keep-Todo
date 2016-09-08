@@ -1,8 +1,7 @@
 import {
-      FETCH_DATA,
-      FETCH_REJECTED,
+      FETCH_LABEL_START,
+      FETCH_LABEL_FAILED,
       FETCH_LABELS,
-      GET_TOKEN,
       CREAT_LABEL,
       EDIT_LABEL,
       DEL_LABEL,
@@ -11,9 +10,23 @@ import {
 
 export default function ( state = {
   arrayData : [],
+  isFetchStart : false,
+  isFetchFailed : ''
  }, action){
    switch (action.type) {
-
+    case FETCH_LABEL_START: {
+      return{
+        ...state,
+        isFetchStart : true
+      }
+    }
+    case FETCH_LABEL_FAILED: {
+      console.log('FETCH_LABELS FAILED',action.data);
+      return{
+        ...state,
+        isFetchFailed : action.data
+      }
+    }
     case FETCH_LABELS : {
       console.log('FETCH_LABELS REDUCER',action.data);
        return {

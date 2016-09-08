@@ -55,6 +55,8 @@
     "material-ui": "^0.15.3",
     "react": "^15.2.1",
     "react-bootstrap": "^0.29.5",
+    "react-bootstrap-modal": "^2.1.0",
+    "react-checkbox-list": "0.0.2",
     "react-dom": "^15.2.1",
     "react-html5video": "^1.2.10",
     "react-logger": "^1.1.0",

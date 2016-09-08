@@ -12,6 +12,7 @@ import Dialog from 'material-ui/Dialog';
 function mapStatetoProps({ todoReducers, labelReducers}){
   return {
     token : todoReducers.token,
+    isFetchingFailed : todoReducers.isFetchingFailed
   }
 }
 function mapDispatchToPros (dispatch) {
@@ -33,15 +34,15 @@ class Login extends Component {
     let username = document.getElementById('username').value;
     let password = document.getElementById('password').value;
     this.props.getTokenCall({
-      username : "avinash",
-      password : "password"
+      username : username,
+      password : password
     });
   }
   componentWillMount(){
     let token = localStorage.getItem("token");
     if(localStorage.getItem("token")){
       hashHistory.push('/dashboard');
-      this.props.history.pushState(null, '/dashboard');
+      // this.props.history.pushState(null, '/dashboard');
     }
   }
   render(){
@@ -61,6 +62,8 @@ class Login extends Component {
         primary={true}
         keyboardFocused={true}
         onClick={this.getLogin}/>
+        <br/>
+        fetch : {this.props.isFetchingFailed}
       </div>
     );
   }
