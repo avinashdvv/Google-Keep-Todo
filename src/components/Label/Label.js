@@ -28,14 +28,14 @@ class Label extends Component {
                       <span>{data[0].name}</span>
                   </li>
     }else{
-      if(this.props.isLabelFetchingFailed.length < 1){
+      if((this.props.isLabelFetchingFailed.length < 1) && !this.props.isLabelFetching){
         labels  = <div>
                     NO LABELS
                   </div>
       }
     }
     if(this.props.isLabelFetchingFailed.length > 1){
-      document.getElementById('error').innerHTML = this.props.isLabelFetchingFailed || null
+      alert(this.props.isLabelFetchingFailed);
     }
     return labels;    
   }
@@ -57,8 +57,6 @@ class Label extends Component {
           <EditLabel token= {this.props.token} labelDetails={this.props.labels}/>
         </div>
         <div>
-        <div id='error'>
-        </div>
           <ul>
             {labels}
           </ul>

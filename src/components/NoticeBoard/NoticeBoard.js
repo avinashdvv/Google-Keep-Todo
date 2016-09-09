@@ -7,22 +7,32 @@ import TodoCard from './TodoCard';
 import CreatTodo from './CreatTodo';
 
 
-const NoticeBoard = (props) => {
-	let board;
-	if(!props.isCardsFetching){
-		board = 'Loading .......'
-	}else{
-		board = <TodoCard token={props.token} labelsData={props.labelsData} cardsData={props.cardsData}/>
-	}
- return(
- 	 <div className='notice-board'>
-        <div className='row'>
-            <div className="col-md-offset-3 col-md-7">
-              <CreatTodo token={props.token} labelsData={props.labelsData}/>
-            </div>
+class NoticeBoard extends Component {
+   constructor(props) {
+     super(props);
+   }
+  render() {
+  	let board;
+  	if(!this.props.isCardsFetching){
+  		board = 'Loading .......'
+  	}else{
+  		board = <TodoCard 
+                token={this.props.token}
+                labelsData={this.props.labelsData} 
+                isCardsFetchingFailed = {this.props.isCardsFetchingFailed}
+                cardsData={this.props.cardsData}/>
+  	}
+    
+   return(
+   	 <div className='notice-board'>
+          <div className='row'>
+              <div className="col-md-offset-3 col-md-7">
+                <CreatTodo token={this.props.token} labelsData={this.props.labelsData}/>
+              </div>
+          </div>
+          {board}
         </div>
-        {board}
-      </div>
-  )
+    )
+ }
 }
 export default NoticeBoard;

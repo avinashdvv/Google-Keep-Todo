@@ -22,6 +22,7 @@ function mapStatetoProps({ todoReducers, labelReducers}){
     cardsData : todoReducers.notesData,
     labelsData : labelReducers.arrayData,
     isCardsFetching : todoReducers.isfetching,
+    isCardsFetchingFailed : todoReducers.isFetchingFailed,
     isLabelFetching : labelReducers.isFetchStart,
     isLabelFetchingFailed : labelReducers.isFetchFailed
   }
@@ -72,7 +73,12 @@ class App extends Component {
                 labels = {this.props.labelsData}/>
             </div>
             <div className='col-md-9 notice-board-container'>
-              <NoticeBoard token={token} isCardsFetching={this.props.isCardsFetching} labelsData = {this.props.labelsData} cardsData={this.props.cardsData}/>
+              <NoticeBoard 
+              token={token} 
+              isCardsFetching={this.props.isCardsFetching}
+              isCardsFetchingFailed = {this.props.isCardsFetchingFailed}
+              labelsData = {this.props.labelsData}
+              cardsData={this.props.cardsData}/>
             </div>
         </div>
       </div>

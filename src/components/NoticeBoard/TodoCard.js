@@ -1,20 +1,21 @@
 import React , { Component } from 'react';
+import { deleteCardCall , editCardCall } from '../../actions';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {Card, CardHeader, CardText } from 'material-ui/Card';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
-import { deleteCardCall , editCardCall } from '../../actions';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import TextField from 'material-ui/TextField';
-import Select from 'react-select';
-import 'react-select/dist/react-select.css';
 import Popover from 'material-ui/Popover';
 import {Menu, MenuItem} from 'material-ui/Menu';
-import {List, ListItem} from 'material-ui/List';
 import Checkbox from 'material-ui/Checkbox';
-import  CheckBoxList from 'react-checkbox-list';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import {List, ListItem, MakeSelectable} from 'material-ui/List'
+
+
+
 function mapDispatchToPros (dispatch) {
   return bindActionCreators({
     deleteCardCall : deleteCardCall,
@@ -28,8 +29,8 @@ class TodoCard extends Component {
     this.state = {
       open : false,
       popOpen : false,
-      value: 'Property Value',
-      labelValue : null,
+      value: '',
+      labelsData : {}
     }
   }
   handleTouchTap(event){
@@ -38,11 +39,10 @@ class TodoCard extends Component {
       popOpen: true,
       anchorEl: event.currentTarget,
     });
-  }
+  }handleChange
   handleRequestClose() {
-    
     this.setState({
-      popOpen: false,
+      popOpen: false
     });
   };
 
@@ -65,57 +65,14 @@ class TodoCard extends Component {
   }
 
   editCard(value, e){
-    console.log('state',this.state.labelValue);
-    let delLabelData = '';
-    if(this.props.labelsData.length > 1) {
-      this.props.labelsData.map((op) =>{
-        if(this.state.labelValue.length > 1) {
-          this.state.labelValue.map((re)=>{
-              if(op.id != re.value){
-                console.log(op.id,re.value);
-                delLabelData += op.id+","
-              }
-          })
-        }else if(this.state.labelValue.length > 1){
-              if(op.id != this.state.labelValue[0].value){
-                console.log(op.id,re.value);
-                delLabelData += op.id+","
-              }
-        }
-      })
-    }
-    // }else if(this.props.labelsData.length == 0) {
-    //   if(this.state.labelValue.length > 1) {
-    //       this.state.labelValue.map((re)=>{
-    //           if(this.props.labelsData[0].id != re.value){
-    //             console.log(this.props.labelsData[0].id,re.value);
-    //             delLabelData += this.props.labelsData[0].id+","
-    //           }
-    //       })
-    //     }else if(this.state.labelValue.length > 1){
-    //           if(this.props.labelsData[0].id != this.state.labelValue[0].value){
-    //             console.log(op.id,re.value);
-    //             delLabelData += op.id+","
-    //           }
-    //     }
-    // }
-    console.log(delLabelData);
-    let body = document.getElementById('body_'+value.id).value;
-    let labels = "";
-    if(this.state.labelValue.length > 1){
-      this.state.labelValue.map(function(re){
-        labels += re.value+","
-      }) 
-    }else if (this.state.labelValue.length == 1){
-      labels += this.state.labelValue[0].value
-    }
-    
+    console.error(this.state);
     this.props.editCardCall({
       token : this.token,
-      id : value.id,
-      name: value.name,
-      body : body,
-      addLabelsData : labels.slice(0,-1)
+      id : this.state.value.id,
+      name: this.state.value.name,
+      body : this.state.value.body,
+      addLabelsData : this.state.labelsData.addlabel,
+      deleteLabelData : this.state.labelsData.deleteLabel
     })
     this.handleClose();
   }
@@ -123,45 +80,55 @@ class TodoCard extends Component {
   deleteCard(cardId,e){
      this.props.deleteCardCall({
       token: this.props.token,
-      id: cardId
+      id: this.state.value.id
     })
      this.handleClose();
-
-  }
-  handleLabelChange = (value) => {
-    this.setState({
-      labelValue : value
-    });    
-  }
-  handleNoteLabel(labelsData) {
-    let labels = [];
-    if(labelsData.length >1){
-      labelsData.map(function(value){
-      labels.push({ value: value.id , label: value.name })
-      })
-    }else if (labelsData.length == 1){
-      labels.push({value: labelsData[0].id,label: labelsData[0].name})
-    }
-    return labels
   }
 
+  handleList(value, event)   {
+    console.error(value, document.getElementById('listitem_checkbox_'+value).checked );
+    let addlabel=[],deleteLabel=[]
+    if(document.getElementById('listitem_checkbox_'+value).checked === true){
+      deleteLabel = deleteLabel.filter(item => item !== value);
+      addlabel.push(value)
+    }else{
+      addlabel = addlabel.filter(item => item !== value);
+      deleteLabel.push(value);
+    };
+    let addlabelData = '',dellabelData = '';
+    addlabelData = addlabel.map((op)=>{
+                          return op+","
+                        });
+    dellabelData = deleteLabel.map((op)=>{
+                          return op+","
+                        });
+    console.error(addlabel,deleteLabel,addlabelData,dellabelData);
+   this.setState({
+    labelsData : {
+                    addlabel : addlabelData.slice(0,-1),
+                    deleteLabel : dellabelData.slice(0,-1)
+                  }
+   })
+   
+  }
+  haddleLabelList(label) {
+   let value = labels.map((op)=>{
+                    return op.name+" "
+                })
+   return value
+  }
   render(){
+    console.log('TodoCard',this.props);
+
+    let status = this.props.isCardsFetchingFailed;
+    if( status.length > 1 ){
+        alert(status); 
+    }
     const customContentStyle = {
         width: '40%',
         maxWidth: 'none',
         margin:'0 auto'
       };
-    const customStyles = {
-      content : {
-        top                   : '50%',
-        left                  : '50%',
-        right                 : 'auto',
-        bottom                : 'auto',
-        marginRight           : '-50%',
-        transform             : 'translate(-50%, -50%)'
-      }
-    };
-    console.log('TODO CARD-------------',this.props);
     return(
       <div>
         {
@@ -169,11 +136,12 @@ class TodoCard extends Component {
                   let tiggerExpandCard = this.handleOpen.bind(this, value);
                   let tiggerHandleChange = this.handleChange.bind(this);
                   let tiggerHandleClose = this.handleClose.bind(this);
-                  let tiggerEditCard = this.editCard.bind(this,value);
+                  let tiggerEditCard = this.editCard.bind(this, value);
                   let tiggerDeleteCard = this.deleteCard.bind(this, value.id);
                   let tiggerHandleTouchTap = this.handleTouchTap.bind(this);
                   let tiggerhandleRequestClose = this.handleRequestClose.bind(this);
-                  let tiggerhandleNoteLabel = this.handleNoteLabel.bind(this);
+                  let tiggerHandleList = this.handleList.bind(this);
+                  let tiggerHaddleLabelList = this.haddleLabelList.bind(this);
                   let check;
                   const actions = [
                                       <RaisedButton
@@ -194,12 +162,10 @@ class TodoCard extends Component {
                               title={value.name}>
                             </CardHeader>
                             <CardText>
+                              {value.id} -->
                               {value.body}
                               <br/>
-                              labeles :{value.labels.map((op)=>{
-                                              return op.name+" "
-                                           }) || value.labels[0].name }  
-                              
+                              labeles :{tiggerHaddleLabelList(value.labels)}                              
                               <Dialog
                                 title={this.state.value.name}                                    
                                 actions={actions}
@@ -220,16 +186,30 @@ class TodoCard extends Component {
                                   anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                                   targetOrigin={{horizontal: 'left', vertical: 'top'}}
                                   onRequestClose={tiggerhandleRequestClose}>
-                                    {/*value.labels.map((re)=> <ListItem primaryText={""+re.name} key={'Checkbox'+value.id} leftCheckbox={<Checkbox defaultChecked={true} />} />)*/}
+                                  <List>
+                                    {value.labels.map((re)=> 
+                                      <div>
+                                        <input type="Checkbox" id={'listitem_checkbox_'+re.id} onChange={() => tiggerHandleList(re.id)} 
+                                         value={re.id} defaultChecked={true} />{re.id}
+                                        <ListItem primaryText={""+re.name+"--"+re.id} 
+                                        key={'Checkbox||'+re.id} onClick={() => tiggerHandleList(re.id)} 
+                                       leftCheckbox={<Checkbox id={'listitem_checkbox_'+re.id} />} />
+                                      </div> 
+                                    )}
                                     {
-                                        this.props.labelsData.map((ele)=>{
-                                        let check = value.labels.map((op)=>{
+                                      this.props.labelsData.map((ele)=>{
+                                        check = value.labels.map((op)=>{
                                                       if(ele.id != op.id){
-                                                        return <ListItem primaryText={""+ele.name} key={'Checkbox'+ele.id} leftCheckbox={<Checkbox />} />
+                                                        return <ListItem primaryText={""+ele.name+"--"+ele.id}
+                                                         id={"listitem_"+ele.id}
+                                                         onClick={() => tiggerHandleList(ele.id)}
+                                                         key={'Checkbox__'+ele.id} leftCheckbox={<Checkbox id={'listitem_checkbox_'+ele.id}/>} />
                                                       }
                                                     });
                                         return check;
-                                    })}
+                                      })
+                                    }
+                                  </List>
                                 </Popover>
                               </MuiThemeProvider>
                               </Dialog>                              

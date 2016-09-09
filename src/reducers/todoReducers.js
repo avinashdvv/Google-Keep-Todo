@@ -14,16 +14,15 @@ export default function(state = {
   notesData : [],
   token : '',
   isfetching : false,
-  isFetchingFailed : {
-    type : '',
-    data : ''
-  }
+  isFetchingFailed : ''
 }, action){
   switch (action.type) {
+    
     case GET_TOKEN : {
        return {
                ...state,
-               token : action.token
+               token : action.token,
+               isFetchingFailed : ''
               }
      }
     case NOTE_FETCH_CARDS_START : {
@@ -33,23 +32,18 @@ export default function(state = {
       }
     }
     case NOTE_FETCH_FAILED : {
-      console.error('NOTE_FETCH_FAILED',action.data)
-      let repo;
-      if(action.data.type = 'GET_TODO'){
-        repo = JSON.parse(action.data.error)
-      }else{
-        repo = action.data
-      }
+      console.error('NOTE_FAILED',action.data)
       return {
         ...state,
-        isFetchingFailed : repo
+        isFetchingFailed :  action.data
       }
     }
     case GET_TODO:{
       console.log('GET_TODO_REDUCER',state,action);
       return{
               ...state,
-              notesData : action.payload.data
+              notesData : action.payload.data,
+              isFetchingFailed : ''
             }
     }
     case ADD_TODO:{
@@ -57,7 +51,8 @@ export default function(state = {
       let updatedArray = state.notesData.concat([action.data])
       return {
               ...state,
-              notesData : updatedArray
+              notesData : updatedArray,
+              isFetchingFailed : ''
             }
     }
     case EDIT_TODO: {
@@ -73,7 +68,8 @@ export default function(state = {
        });
       console.log('updatedArray EDIT_TODO_REDUCER >.>...',updatedArray)
        return {...state,
-                notesData : updatedArray
+                notesData : updatedArray,
+                isFetchingFailed : ''
                 }
     }
     case DEL_TODO:{
@@ -87,7 +83,8 @@ export default function(state = {
        console.log('updated DEL_TODO',updatedArray);
       return {
         ...state,
-        notesData : updatedArray
+        notesData : updatedArray,
+        isFetchingFailed : ''
       }
     }
     case NOTE_LABEL_MANAGEMENT: {
@@ -102,7 +99,8 @@ export default function(state = {
 
       return {
               ...state,
-              notesData : updatedArray
+              notesData : updatedArray,
+              isFetchingFailed : ''
              }
     }
     case NOTE_LABEL_EDIT_MANAGEMENT: {
@@ -122,7 +120,8 @@ export default function(state = {
       });
       return {
         ...state,
-        notesData : updatedArray
+        notesData : updatedArray,
+        isFetchingFailed : ''
       }
     }
     case NOTE_LABEL_DEL_MANAGEMENT: {
@@ -144,7 +143,8 @@ export default function(state = {
       });
       return {
         ...state,
-        notesData : updatedArray
+        notesData : updatedArray,
+        isFetchingFailed : ''
       }
     }
     default:

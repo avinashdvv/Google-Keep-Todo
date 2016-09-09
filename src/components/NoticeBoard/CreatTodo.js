@@ -26,7 +26,7 @@ class CreatTodo extends Component {
     this.creatNote = this.creatNote.bind(this);
     this.state = {
       expanded: false,
-      value  : null
+      value  : ''
     }
   }
   
@@ -59,12 +59,12 @@ class CreatTodo extends Component {
     let todoName = document.getElementById('todoName').value;
     let todoBody = document.getElementById('todoBody').value;
     let labels = "";
-    let addlabels 
-    if(this.state.value.length > 1){
-      addlabels= this.state.value.map(function(value){
-          labels += value.value+","
-         return labels
-      })
+    let addlabels;
+    if(this.state.value.length >= 1){
+      addlabels = this.state.value.map(function(value){
+                      labels += value.value+","
+                      return labels
+                    })
     }
     let data = {
                 body : {
@@ -72,7 +72,7 @@ class CreatTodo extends Component {
                           "body" : ""+todoBody,
                         },          
                 labelsData : labels.slice(0,-1)
-                } 
+               } 
    
     this.props.addCardCall({
       token : this.props.token,
