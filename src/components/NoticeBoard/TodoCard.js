@@ -22,6 +22,8 @@ function mapDispatchToPros (dispatch) {
     editCardCall : editCardCall,
    },dispatch);
 }
+let ADD_LABEL = [], DEL_LABEL = [],
+    ADD_LABEL_STR ='', DEL_LABEL_STR = ''
 class TodoCard extends Component {
   constructor(props) {
     super(props);
@@ -30,6 +32,8 @@ class TodoCard extends Component {
       open : false,
       popOpen : false,
       value: '',
+      body : '',
+      name : '',
       labelsData : {}
     }
   }
@@ -39,7 +43,8 @@ class TodoCard extends Component {
       popOpen: true,
       anchorEl: event.currentTarget,
     });
-  }handleChange
+  }
+
   handleRequestClose() {
     this.setState({
       popOpen: false
@@ -49,7 +54,9 @@ class TodoCard extends Component {
   handleOpen(value){
     this.setState({
       open: true,
-      value: value
+      value: value,
+      body : value.body,
+      name : value.name
     });
   };
 
@@ -57,20 +64,23 @@ class TodoCard extends Component {
     this.setState({open: false});
   };
 
-  handleChange(event){
-    console.log(event);
+  handleBodyChange = (event) => {
     this.setState({
-      value: event.target.value,
-    });
+      body : event.target.value
+    })
   }
-
+  handleNameChange = (event) => {
+    this.setState({
+      name : event.target.value
+    })
+  }
   editCard(value, e){
     console.error(this.state);
     this.props.editCardCall({
       token : this.token,
       id : this.state.value.id,
-      name: this.state.value.name,
-      body : this.state.value.body,
+      name: this.state.name,
+      body : this.state.body,
       addLabelsData : this.state.labelsData.addlabel,
       deleteLabelData : this.state.labelsData.deleteLabel
     })
@@ -87,36 +97,30 @@ class TodoCard extends Component {
 
   handleList(value, event)   {
     console.error(value, document.getElementById('listitem_checkbox_'+value).checked );
-    let addlabel=[],deleteLabel=[]
+    
     if(document.getElementById('listitem_checkbox_'+value).checked === true){
-      deleteLabel = deleteLabel.filter(item => item !== value);
-      addlabel.push(value)
+      DEL_LABEL = DEL_LABEL.filter(item => item !== value);
+      ADD_LABEL.push(value)
     }else{
-      addlabel = addlabel.filter(item => item !== value);
-      deleteLabel.push(value);
+         ADD_LABEL = ADD_LABEL.filter(item => item !== value);
+         DEL_LABEL.push(value);
     };
-    let addlabelData = '',dellabelData = '';
-    addlabelData = addlabel.map((op)=>{
-                          return op+","
-                        });
-    dellabelData = deleteLabel.map((op)=>{
-                          return op+","
-                        });
-    console.error(addlabel,deleteLabel,addlabelData,dellabelData);
+    console.error(ADD_LABEL,DEL_LABEL)
    this.setState({
     labelsData : {
-                    addlabel : addlabelData.slice(0,-1),
-                    deleteLabel : dellabelData.slice(0,-1)
+                    addlabel : ADD_LABEL.toString(),
+                    deleteLabel : DEL_LABEL.toString()
                   }
    })
    
   }
-  haddleLabelList(label) {
-   let value = labels.map((op)=>{
+  haddleLabelList = (label) => {
+   let value = label.map((op)=>{
                     return op.name+" "
                 })
    return value
   }
+
   render(){
     console.log('TodoCard',this.props);
 
@@ -134,19 +138,21 @@ class TodoCard extends Component {
         {
           this.props.cardsData.map((value) => {
                   let tiggerExpandCard = this.handleOpen.bind(this, value);
-                  let tiggerHandleChange = this.handleChange.bind(this);
                   let tiggerHandleClose = this.handleClose.bind(this);
                   let tiggerEditCard = this.editCard.bind(this, value);
                   let tiggerDeleteCard = this.deleteCard.bind(this, value.id);
                   let tiggerHandleTouchTap = this.handleTouchTap.bind(this);
                   let tiggerhandleRequestClose = this.handleRequestClose.bind(this);
                   let tiggerHandleList = this.handleList.bind(this);
-                  let tiggerHaddleLabelList = this.haddleLabelList.bind(this);
+                  let tiggerHaddleLabelList = this.haddleLabelList(value.labels);
+                  let tiggerhandleNameChange = this.handleNameChange;
+                  let tiggerhandleBodyChange = this.handleBodyChange;
                   let check;
                   const actions = [
                                       <RaisedButton
                                         onClick={tiggerHandleTouchTap}
-                                        label="Click me" />,            
+                                        label="EDIT LABELS" />,            
+                                        <br/>,
                                       <RaisedButton label="EDIT" primary={true}
                                         onClick={tiggerEditCard}/>,
                                       <RaisedButton label="DELETE" secondary={true}
@@ -165,19 +171,23 @@ class TodoCard extends Component {
                               {value.id} -->
                               {value.body}
                               <br/>
-                              labeles :{tiggerHaddleLabelList(value.labels)}                              
+                              labeles :{tiggerHaddleLabelList}                              
                               <Dialog
-                                title={this.state.value.name}                                    
                                 actions={actions}
                                 modal={true}
                                 contentStyle={customContentStyle}
                                 open={this.state.open} >
                                <TextField
+                                  id={'name_'+value.id}
+                                  defaultValue={this.state.value.name}  
+                                  onChange={tiggerhandleNameChange}/>
+                                  
+                               <TextField
                                   multiLine={true}
                                   className='todo-body'
                                   defaultValue = {this.state.value.body}
-                                  onChange={tiggerHandleChange}
-                                 id={'body_'+value.id}/>
+                                  id={'body_'+value.id}
+                                  onChange={tiggerhandleBodyChange}/>
                               <MuiThemeProvider>
                                 <Popover
                                   ref='Popover'
@@ -186,30 +196,37 @@ class TodoCard extends Component {
                                   anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
                                   targetOrigin={{horizontal: 'left', vertical: 'top'}}
                                   onRequestClose={tiggerhandleRequestClose}>
-                                  <List>
-                                    {value.labels.map((re)=> 
-                                      <div>
-                                        <input type="Checkbox" id={'listitem_checkbox_'+re.id} onChange={() => tiggerHandleList(re.id)} 
-                                         value={re.id} defaultChecked={true} />{re.id}
-                                        <ListItem primaryText={""+re.name+"--"+re.id} 
-                                        key={'Checkbox||'+re.id} onClick={() => tiggerHandleList(re.id)} 
-                                       leftCheckbox={<Checkbox id={'listitem_checkbox_'+re.id} />} />
-                                      </div> 
-                                    )}
-                                    {
+                                  {
                                       this.props.labelsData.map((ele)=>{
-                                        check = value.labels.map((op)=>{
-                                                      if(ele.id != op.id){
-                                                        return <ListItem primaryText={""+ele.name+"--"+ele.id}
-                                                         id={"listitem_"+ele.id}
-                                                         onClick={() => tiggerHandleList(ele.id)}
-                                                         key={'Checkbox__'+ele.id} leftCheckbox={<Checkbox id={'listitem_checkbox_'+ele.id}/>} />
-                                                      }
-                                                    });
-                                        return check;
+                                        if(value.labels.length >= 1){
+                                          check = value.labels.map((op)=>{
+                                                        if (op.id != ele.id) {
+                                                          // console.error(ele.id,op.id, ele.id === op.id);
+                                                          return <ListItem primaryText={""+ele.name+"--"+ele.id}
+                                                                   id={"listitem_"+ele.id}
+                                                                   onClick={() => tiggerHandleList(ele.id)}
+                                                                   key={'Checkbox__'+ele.id} leftCheckbox={<Checkbox id={'listitem_checkbox_'+ele.id}/>} />
+                                                        }
+                                                  });
+                                          return check
+                                        }else{
+                                          return <ListItem primaryText={""+ele.name+"--"+ele.id}
+                                                    id={"listitem_"+ele.id}
+                                                    onClick={() => tiggerHandleList(ele.id)}
+                                                    key={'Checkbox__'+ele.id} leftCheckbox={<Checkbox id={'listitem_checkbox_'+ele.id}/>} />
+                                          }
                                       })
                                     }
-                                  </List>
+
+                                    {value.labels.map((re)=> 
+                                      <ListItem 
+                                        primaryText={""+re.name+"--"+re.id} 
+                                        key={'Checkbox||'+re.id}
+                                        onClick={() => tiggerHandleList(re.id)} 
+                                        leftCheckbox={<Checkbox id={'listitem_checkbox_'+re.id}
+                                        defaultChecked={true}/>} />
+                                      
+                                    )}
                                 </Popover>
                               </MuiThemeProvider>
                               </Dialog>                              

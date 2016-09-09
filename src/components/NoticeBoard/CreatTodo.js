@@ -26,7 +26,9 @@ class CreatTodo extends Component {
     this.creatNote = this.creatNote.bind(this);
     this.state = {
       expanded: false,
-      value  : ''
+      value  : '',
+      name : '',
+      body : ''
     }
   }
   
@@ -53,11 +55,27 @@ class CreatTodo extends Component {
     });
     console.log(this.state.value)
   }
-  
+  handleName = (event) => {
+    this.setState({
+      name : event.target.value
+    })
+  }
+  handleBody = (event) => {
+    this.setState({
+      body : event.target.value
+    })
+  }
   creatNote(event) {
     event.preventDefault()
-    let todoName = document.getElementById('todoName').value;
-    let todoBody = document.getElementById('todoBody').value;
+
+    let todoName,todoBody;
+    if(this.state.name !== undefined){
+        todoName = this.state.name;
+    }
+    if(this.state.body !== undefined){
+       todoBody = this.state.body;  
+    }
+    
     let labels = "";
     let addlabels;
     if(this.state.value.length >= 1){
@@ -103,14 +121,16 @@ class CreatTodo extends Component {
           <CardTitle  expandable={true}>
             <TextField
               id='todoName'
-              hintText="Title"/>
+              hintText="Title"
+              onChange={this.handleName}/>
           </CardTitle>
           <CardText onClick={this.handleExpand}>
             <TextField
               multiLine={true}
               className='todo-body'
               id='todoBody'
-              hintText="Take a note">
+              hintText="Take a note"
+              onChange={this.handleBody}>
             </TextField>
           </CardText>
           <div className='note-option-container'>

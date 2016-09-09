@@ -191,14 +191,14 @@ export function getLabelCall(token) {
                 },
                 transformResponse: [function (data) {
                   respo = data
-                  return data;
+                  return JSON.parse(data);
                 }],
                 json : true
             }
             axios(authOptions)
                 .then(function(response) {
                   console.log('FETCH_LABELS IS SUCCESS',response.data);
-                  dispatch(getLabel(JSON.parse(response.data)));
+                  dispatch(getLabel(response.data));
                 })
                 .catch(function(err){
                   console.error('FETCH_LABELS EDIT IS NOT WORKING',err,respo);
@@ -338,7 +338,7 @@ export function getCardsCall(token) {
 
 export function editCardCall(value) {
   return function (dispatch) {
-            console.log('editCard',value)
+            console.error('editCard',value)
             let respo;
             let noteId = null;
             var authOptions = {
@@ -350,7 +350,7 @@ export function editCardCall(value) {
                 },
                 transformResponse: [function (data) {
                   respo = JSON.parse(data)
-                  return data
+                  return JSON.parse(data)
                 }],
                 data : JSON.stringify({
                  name: value.name,
@@ -431,14 +431,14 @@ export function deleteCardCall(data) {
                 transformResponse: [(data) =>{
                   respo = JSON.parse(data);
                   console.error(data);
-                  return data
+                  return JSON.parse(data)
                 }],
                 json : true
             }
             axios(authOptions)
                 .then(function(response) {
                   console.log('LABEL CREATE IS SUCCESS',response);
-                  dispatch( deleteCard(JSON.parse(data.id)));
+                  dispatch( deleteCard(data.id));
                 })
                 .catch(function(err){
                   console.error('LABEL CREATE IS NOT WORKING',err);

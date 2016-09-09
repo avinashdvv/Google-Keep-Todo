@@ -46,9 +46,8 @@ class App extends Component {
       hashHistory.push('/');
   }
   componentWillMount() {
-
     let token = localStorage.getItem("token");
-    if(token.length > 1){
+    if(localStorage.getItem("token") && token.length > 1){
       this.props.getCardsCall(token);
       this.props.getLabelCall(token);  
     }else{
