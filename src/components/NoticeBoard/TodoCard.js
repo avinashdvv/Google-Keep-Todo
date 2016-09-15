@@ -49,8 +49,6 @@ class TodoCard extends Component {
   render() {
     console.log('TodoCard',this.props);
 
-
-
     return(
       <div className='todo-container'>
         {(()=>{

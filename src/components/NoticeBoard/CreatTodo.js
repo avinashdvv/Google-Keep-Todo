@@ -127,7 +127,7 @@ class CreatTodo extends Component {
      ){
        console.error('--------------------',nextProps);
        document.getElementById('todoName').value = '';
-       document.getElementById('todoBody').value = '';
+       document.getElementById('todoBody').value = '-';
        document.getElementById('labelsData').innerHTML = '';
        this.setState({
          expanded : false,
