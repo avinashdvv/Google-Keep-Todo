@@ -1,14 +1,42 @@
 // @import 'react-select/dist/react-select.css';
-$base-bg-colr : #FFBB00;
+$base-bg-colr : #f7f7f7;
+$base-colr : #FFBB00;
 .nav-bar{
-  background-color: $base-bg-colr !important;
+  background-color: $base-colr !important;
+  svg,button,h1,span{
+    color: black !important;
+    font-weight: bold !important;
+    fill : black !important;
+  }
 }
-.login-page{
-	margin-top : 10% ;
-	padding: 50px;
-	background-color: white;
-	box-shadow: 1px 1px 1px lightgray;
+
+.card{
+  margin: 15% auto;
+  width: 25%;
+  height: 221px;
+  background: $base-bg-colr !important;
+  padding: 2.5% 2.5% 1.5% 2.5% ;
+  display: flex;
+  align-items: center;
+  .username,.password{
+    width: 100% !important;
+  }
+  .card-actions{
+    text-align: center;
+    // width: 100% !important;
+    .Submit-btn{
+      // width: 100% !important;
+    }
+  }
+  .circular-progress{
+    margin:0 auto !important;
+    padding-left: 45%;
+  }
+
 }
+
+
+
 .activity-icons{
   i{
     font-size: 40px;

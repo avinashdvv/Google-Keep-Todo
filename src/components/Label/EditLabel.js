@@ -7,6 +7,8 @@ import Dialog from 'material-ui/Dialog';
 import CreatLabel  from './CreatLabel';
 import IconButton from 'material-ui/IconButton';
 import TextField from 'material-ui/TextField';
+import FontIcon from 'material-ui/FontIcon';
+
 
 function mapDispatchToPros (dispatch) {
   return bindActionCreators({
@@ -34,6 +36,7 @@ class EditLabel extends Component {
     this.setState({
       isOpen : false
     });
+    this.props.close();
   }
 
   editLabel(data ,e ) {
@@ -41,7 +44,7 @@ class EditLabel extends Component {
     this.props.editLabelCall(
       {
        id : data.id,
-       token : this.props.token,  
+       token : this.props.token,
        newLabel : {
                     "name": tempLabel
                   }
@@ -60,26 +63,27 @@ class EditLabel extends Component {
     if(props.length > 1){
         labels = props.map(function(data) {
             return(
-              <div id={"editLabel"+data.id} key={"editLabel_"+data.id}>
-                  <IconButton
-                    iconClassName="material-icons"
+              <div className='edit-label-box' id={"editLabel"+data.id} key={"editLabel_"+data.id}>
+                  <FontIcon
+                    className="material-icons del-icon"
                     tooltip="Ligature"
                     onClick={this.deleteLabel.bind(this,data.id)}>
-                  delete</IconButton>
+                  delete</FontIcon>
                   <TextField
                     id={"E-D-label_"+data.id}
                     className='edit-label'
+                    underlineShow={false}
                     defaultValue={data.name}>
                   </TextField>
                   <IconButton
-                    iconClassName="material-icons"
+                    iconClassName="material-icons done-icon"
                     tooltip="Ligature"
                     onClick={this.editLabel.bind(this,data)}>
                   done</IconButton>
               </div>
             )}.bind(this));
       }else if(props.length == 1) {
-        labels = <div id={"editLabel"+props[0].id} key={"editLabel_"+props[0].id}>
+        labels = <div className='edit-label-box' id={"editLabel"+props[0].id} key={"editLabel_"+props[0].id}>
                   <IconButton
                     iconClassName="material-icons"
                     tooltip="Ligature"
@@ -88,6 +92,7 @@ class EditLabel extends Component {
                   <TextField
                     id={"E-D-label_"+props[0].id}
                     className='edit-label'
+                    underlineShow={false}
                     defaultValue={props[0].name}>
                   </TextField>
                   <IconButton
@@ -103,6 +108,13 @@ class EditLabel extends Component {
       }
       return labels;
   }
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.isOpen === true){
+      this.setState({
+        isOpen : true
+      })
+    }
+  }
   render() {
     console.log('EDIT_LABEL ---------', this.props);
     const actions = [
@@ -112,25 +124,24 @@ class EditLabel extends Component {
         onClick={this.closeModal}/>
     ];
     const customContentStyle = {
-      width: '30%',
+      width: '300px',
       maxWidth: 'none',
       maring: '0 auto'
     };
     return(
-      <div className='col-md-6'>
-          <FlatButton label="EDIT" onClick= {this.openModal} />
+      <div className='label-edit'>
+          <FlatButton label="EDIT" className='edit-btn' onClick= {this.openModal} />
           <Dialog
             title="Creat and Edit Labels"
             actions={actions}
             modal={false}
+            className='edit-label-dialog'
             open={this.state.isOpen}
             onRequestClose={this.closeModal}
             autoScrollBodyContent={true}
             contentStyle={customContentStyle}>
-            <CreatLabel token={this.props.token} handleLabels={this.handleLabels}/>
-            <div id='labelDetails' ref="labelDetails">
-              {this.handleLabels(this.props.labelDetails)}
-            </div>
+            <CreatLabel labelFetchingStatus={this.props.labelFetchingStatus} token={this.props.token} handleLabels={this.handleLabels}/>
+            {this.handleLabels(this.props.labelDetails)}
           </Dialog>
       </div>
     );

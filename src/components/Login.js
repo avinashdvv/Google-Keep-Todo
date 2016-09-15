@@ -6,15 +6,19 @@ import { getTokenCall } from '../actions';
 import { hashHistory } from "react-router";
 
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
+import RaisedButton from 'material-ui/RaisedButton';
+import TextField from 'material-ui/TextField';
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
+import CircularProgress from 'material-ui/CircularProgress';
+import Snackbar from 'material-ui/Snackbar';
 
 function mapStatetoProps({ todoReducers, labelReducers}){
   return {
     token : todoReducers.token,
-    isFetchingFailed : todoReducers.isFetchingFailed
+    fetchingStatus : todoReducers.fetchingStatus
   }
 }
+
 function mapDispatchToPros (dispatch) {
   return bindActionCreators({
        getTokenCall : getTokenCall,
@@ -25,6 +29,9 @@ class Login extends Component {
   constructor(props) {
     super(props);
     this.getLogin = this.getLogin.bind(this);
+    this.state = {
+      open : false
+    }
   }
   getChildContext() {
     return {muiTheme: getMuiTheme()};
@@ -38,34 +45,70 @@ class Login extends Component {
       password : password
     });
   }
-  componentWillMount(){
+  componentWillMount () {
     let token = localStorage.getItem("token");
     if(localStorage.getItem("token")){
       hashHistory.push('/dashboard');
       // this.props.history.pushState(null, '/dashboard');
     }
+
   }
+  componentDidMount () {
+    let clientHeight = document.getElementById('card').offsetHeight;
+    document.getElementById('card').style.height = clientHeight+'px';
+    console.error(clientHeight);
+    if(document.getElementById('circular-progress')){
+      document.getElementById('circular-progress').parentNode.style.margin = '0px auto';
+    }
+  }
+
   render(){
     console.log('---LOGIN---',this.props);
-   return(
-      <div className='col-md-offset-3 col-md-3 login-page' >
-        <input defaultValue='avinash' id='username' className='form-control' placeholder='username' ref='username'/>
-        <br/>        
-        <input defaultValue='password' id='password' className='form-control' placeholder='password' ref='password'/>
+    let output,usernameErrorText,passwordErrorText;
+    if(this.props.fetchingStatus.method === 'GET_TOKEN' &&
+      this.props.fetchingStatus.fail.status === true &&
+      this.props.fetchingStatus.fail.data === "worng username or password") {
+      usernameErrorText = 'wrong username or';
+      passwordErrorText = 'wrong password';
+      console.error(usernameErrorText);
+    }
+    if(this.props.fetchingStatus.method === 'GET_TOKEN' &&
+       this.props.fetchingStatus.start === true) {
+         output =  <div className='circular-progress' id='circular-progress'>
+                      <CircularProgress />
+                  </div>
 
-      <FlatButton
-        label="Cancel"
-        primary={true}
-        onClick={this.handleClose}/>
-      <FlatButton
-        label="Submit"
-        primary={true}
-        keyboardFocused={true}
-        onClick={this.getLogin}/>
-        <br/>
-        fetch : {this.props.isFetchingFailed}
-      </div>
-    );
+       }
+    else {
+        output =  <div>
+                    <TextField  hintText="username"
+                      id='username'
+                      className='username'
+                      defaultValue='avinash'
+                      errorText = {usernameErrorText}
+                      ref='username'/>
+                    <TextField type='password'
+                       errorText = {passwordErrorText}
+                       defaultValue='password'
+                       className='password' id='password'  hintText='password' ref='password'/>
+                       <br/>
+                       <br/>
+                    <CardActions className='card-actions'>
+                      <RaisedButton
+                        label="Submit"
+                        primary={true}
+                        className='Submit-btn'
+                        keyboardFocused={true}
+                        onClick={this.getLogin}/>
+                    </CardActions>
+                  </div>
+          }
+
+   return(
+        <Card className='card' id='card'>
+            {output}
+        </Card>
+      );
   }
 }
 
@@ -77,8 +120,10 @@ Login.propsType = {
   token  : React.PropTypes.isRequired,
   getTokenCall : React.PropTypes.isRequired
 }
+
 Login.defaultProps = {
   token : null,
   getTokenCall : null
 }
+
 export default connect(mapStatetoProps,mapDispatchToPros)(Login);

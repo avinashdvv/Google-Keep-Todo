@@ -13,7 +13,8 @@ import baseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
-import Dialog from 'material-ui/Dialog';
+import Snackbar from 'material-ui/Snackbar';
+
 // import injectTapEventPlugin from "react-tap-event-plugin";
 
 function mapStatetoProps({ todoReducers, labelReducers}){
@@ -21,10 +22,8 @@ function mapStatetoProps({ todoReducers, labelReducers}){
     token : todoReducers.token,
     cardsData : todoReducers.notesData,
     labelsData : labelReducers.arrayData,
-    isCardsFetching : todoReducers.isfetching,
-    isCardsFetchingFailed : todoReducers.isFetchingFailed,
-    isLabelFetching : labelReducers.isFetchStart,
-    isLabelFetchingFailed : labelReducers.isFetchFailed
+    cardsFetchingStatus : todoReducers.fetchingStatus,
+    labelFetchingStatus : labelReducers.fetchingStatus
   }
 }
 function mapDispatchToPros (dispatch) {
@@ -37,6 +36,13 @@ class App extends Component {
   constructor(props) {
     super(props);
     // injectTapEventPlugin();
+    this.state = {
+      open : false,
+      method : '',
+      labelopen: false,
+      lebelmethod : ''
+    }
+
   }
   getChildContext() {
     return {muiTheme: getMuiTheme()};
@@ -47,40 +53,103 @@ class App extends Component {
   }
   componentWillMount() {
     let token = localStorage.getItem("token");
+
     if(localStorage.getItem("token") && token.length > 1){
       this.props.getCardsCall(token);
-      this.props.getLabelCall(token);  
+      this.props.getLabelCall(token);
     }else{
-      hashHistory.push('/');   
+      hashHistory.push('/');
     }
+
   }
+
+  componentWillReceiveProps(nextProps) {
+    let cardsData = nextProps.cardsFetchingStatus;
+    let labelData = nextProps.labelFetchingStatus;
+    if(cardsData.method.length > 1) {
+       if(cardsData.fail.status === true){
+         this.setState({
+           method : cardsData.fail.data,
+           open : true,
+           labelopen : false,
+           lebelmethod : '',
+         })
+       }
+      if(cardsData.success === true)  {
+         this.setState({
+           open : true,
+           method : cardsData.method+" is success",
+           labelopen : false,
+           lebelmethod : '',
+         })
+       }
+     }
+    if ( labelData.method.length > 1 ) {
+        if(labelData.fail.status === true){
+          this.setState({
+            method : '',
+            open : false,
+            labelopen : true,
+            lebelmethod : labelData.fail.data,
+          })
+        }
+       if(labelData.success === true)  {
+          this.setState({
+            open : false,
+            method : '',
+            labelopen : true,
+            lebelmethod : labelData.method+" is success"
+          })
+        }
+      }
+  }
+
   render(){
     console.log("----APP----",this.props);
     let token = localStorage.getItem("token")
-    let button  = <RaisedButton label="LOGOUT" onClick={this.handleLogOut} secondary={true} />
+    let button  = <FlatButton label="LOGOUT" onClick={this.handleLogOut} secondary={true} />
     return(
       <div>
           <AppBar
           title="Google Keep"
           iconElementRight = {button}
           className='nav-bar'/>
-          <div className='row'>
-            <div className='col-md-3 side-panel'>
-              <Label token={token}
-                isLabelFetching = {this.props.isLabelFetching}
-                isLabelFetchingFailed = {this.props.isLabelFetchingFailed}
+          <div className='total-contanier'>
+            <div className='side-panel'>
+              <Label
+                token = {token}
+                labelFetchingStatus = {this.props.labelFetchingStatus}
+                openPopUp = {(method) => this.setState({open:true,method: method})}
                 labels = {this.props.labelsData}/>
             </div>
-            <div className='col-md-9 notice-board-container'>
-              <NoticeBoard 
-              token={token} 
-              isCardsFetching={this.props.isCardsFetching}
-              isCardsFetchingFailed = {this.props.isCardsFetchingFailed}
-              labelsData = {this.props.labelsData}
-              cardsData={this.props.cardsData}/>
+            <div className='notice-board-container'>
+              <NoticeBoard
+                token={token}
+                cardsFetchingStatus={this.props.cardsFetchingStatus}
+                labelsData = {this.props.labelsData}
+                openPopUp = {(method) => this.setState({open:true,method: method})}
+                cardsData={this.props.cardsData}/>
             </div>
+          </div>
+          <Snackbar
+            open={this.state.labelopen}
+            message={this.state.lebelmethod}
+            autoHideDuration={4000}
+            onRequestClose={() => this.setState({
+              labelopen: false,
+              lebelmethod : ''
+            })}
+          />
+            <Snackbar
+              open={this.state.open}
+              message={this.state.method}
+              autoHideDuration={1000}
+              onRequestClose={() => this.setState({
+                open: false,
+                method : ''
+              })}
+            />
         </div>
-      </div>
     );
   }
 }

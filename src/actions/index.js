@@ -5,15 +5,19 @@ import  Promise from 'es6-promise';
 
 export const GET_TOKEN = 'GET_TOKEN';
 
-export const NOTE_FETCH_CARDS_START = 'NOTE_FETCH_CARDS_START';
+export const NOTE_FETCH_START = 'NOTE_FETCH_START';
+export const NOTE_FETCH_SUCCESS = 'NOTE_FETCH_SUCCESS';
 export const NOTE_FETCH_FAILED = 'NOTE_FETCH_FAILED';
 export const GET_TODO = 'GET_TODO';
 export const ADD_TODO = 'ADD_TODO';
 export const EDIT_TODO = 'EDIT_TODO';
 export const DEL_TODO = 'DEL_TODO';
+export const NOTE_FETCH_STATUS_NULL = 'NOTE_FETCH_STATUS_NULL';
 
 export const FETCH_LABEL_START = 'FETCH_LABEL_START';
 export const FETCH_LABEL_FAILED = 'FETCH_LABEL_FAILED';
+export const FETCH_LABEL_SUCCESS = 'FETCH_LABEL_SUCCESS';
+export const FETCH_LABELS_NULL = 'FETCH_LABELS_NULL';
 export const FETCH_LABELS = 'FETCH_LABELS';
 export const CREAT_LABEL = 'CREAT_LABEL';
 export const EDIT_LABEL = 'EDIT_LABEL';
@@ -21,6 +25,7 @@ export const DEL_LABEL = 'DEL_LABEL';
 export const NOTE_LABEL_MANAGEMENT = 'NOTE_LABEL_MANAGEMENT';
 export const NOTE_LABEL_EDIT_MANAGEMENT = 'NOTE_LABEL_EDIT_MANAGEMENT';
 export const NOTE_LABEL_DEL_MANAGEMENT = 'NOTE_LABEL_DEL_MANAGEMENT';
+export const GET_LABELS_NOTES = 'GET_LABELS_NOTES';
 
 
 function getToken(token) {
@@ -32,15 +37,28 @@ function getToken(token) {
 /*
     label Actions
 */
-function fetchLabelStart(){
+function fetchLabelStart(data){
   return{
-    type : FETCH_LABEL_START
+    type : FETCH_LABEL_START,
+    data : data
   }
 }
-function fetchLabelFailed(data){
+function fetchLabelSuccess(data){
+  return{
+    type : FETCH_LABEL_SUCCESS,
+    data : data
+  }
+}
+function fetchLabelFailed(method,data){
   return{
     type : FETCH_LABEL_FAILED,
+    method : method,
     data : data
+  }
+}
+function fetchLabelNull() {
+  return{
+    type : FETCH_LABELS_NULL
   }
 }
 function getLabel(data) {
@@ -69,22 +87,46 @@ function creatLabel(label) {
     }
   }
 }
+export function labelsNote(data) {
+  fetchLabelNull();
+  fetchingNoteStatusNull();
+  
+  return {
+    type : GET_LABELS_NOTES,
+    data : data
+  }
+}
 
 /*
   CARD ACTIONS
 */
-function fetchingStart(){
+function fetchingNoteStatusNull() {
   return {
-    type : NOTE_FETCH_CARDS_START
+    type : NOTE_FETCH_STATUS_NULL
   }
 }
-function fetchingFailed(data){
-  
+function fetchingNoteStart(data) {
   return {
-    type : NOTE_FETCH_FAILED,
+    type : NOTE_FETCH_START,
     data : data
   }
 }
+
+function fetchingNoteSuceess(data) {
+  return {
+    type : NOTE_FETCH_SUCCESS,
+    data : data
+  }
+}
+
+function fetchingNoteFailed(method,data){
+  return {
+    type : NOTE_FETCH_FAILED,
+    method : method,
+    data : data
+  }
+}
+
 function getCards(data) {
   return {
     type: GET_TODO,
@@ -118,6 +160,7 @@ function deleteCard(id) {
     id : id
   }
 }
+
 function noteLabelManagement(data){
   console.log('NOTE_ACTION',data);
   return {
@@ -140,13 +183,14 @@ function noteLabelDelManagement(data){
     data : data
   }
 }
- 
+
 /*
  ASYNC CALL OF TOKEN
 */
 export function getTokenCall(data) {
 
   return function (dispatch) {
+          dispatch(fetchingNoteStart(GET_TOKEN));
             let respo,
               authOptions = {
                 method : 'POST',
@@ -166,13 +210,14 @@ export function getTokenCall(data) {
                   console.log('GET TOKEN IS SUCCESS',response);
                   localStorage.setItem("token", response.data.Token);
                   dispatch(getToken(response.data.Token));
+                  dispatch(fetchingNoteSuceess(GET_TOKEN));
                   hashHistory.push('/dashboard');
                   // dispatch(getCardsCall(response.data.Token));
                   // dispatch(getLabelCall(response.data.Token));
                 })
                 .catch((err) =>{
                   console.log('GET TOKEN IS SUCCESS FAILED',respo);
-                  dispatch(fetchingFailed(respo.error));
+                  dispatch(fetchingNoteFailed(GET_TOKEN,respo.error));
                 })
             }
 }
@@ -182,7 +227,7 @@ export function getTokenCall(data) {
 export function getLabelCall(token) {
   return function (dispatch) {
           let respo;
-            dispatch(fetchLabelStart());
+            dispatch(fetchLabelStart(FETCH_LABELS));
             var authOptions = {
                 method : 'GET',
                 url: "http://54.199.244.49/todo/label/",
@@ -198,17 +243,20 @@ export function getLabelCall(token) {
             axios(authOptions)
                 .then(function(response) {
                   console.log('FETCH_LABELS IS SUCCESS',response.data);
+                  dispatch(fetchingNoteStatusNull());
                   dispatch(getLabel(response.data));
+                  dispatch(fetchLabelSuccess(FETCH_LABELS))
                 })
                 .catch(function(err){
                   console.error('FETCH_LABELS EDIT IS NOT WORKING',err,respo);
-                  dispatch(fetchLabelFailed(respo))
+                  dispatch(fetchLabelFailed(FETCH_LABELS,respo))
                 })
             }
 }
 
 export function editLabelCall(data) {
   return function (dispatch) {
+            dispatch(fetchLabelStart(EDIT_LABEL));
             let respo,
              authOptions = {
                 method : 'POST',
@@ -228,6 +276,7 @@ export function editLabelCall(data) {
             axios(authOptions)
                 .then(function(response) {
                   console.log('LABEL EDIT IS SUCCESS',response.data);
+                  dispatch(fetchingNoteStatusNull());
                   dispatch(editLabel({
                       id : response.data.id,
                       name : response.data.name
@@ -236,15 +285,17 @@ export function editLabelCall(data) {
                     id : response.data.id,
                     name : response.data.name
                   }));
+                  dispatch(fetchLabelSuccess(EDIT_LABEL))
                 })
                 .catch(function(err){
                   console.error('LABEL EDIT IS NOT WORKING',err);
-                  dispatch(fetchLabelFailed(respo))
+                  dispatch(fetchLabelFailed(EDIT_LABEL,respo))
                 })
             }
 }
 export function creatLabelCall(data) {
   return function(dispatch) {
+            dispatch(fetchLabelStart(CREAT_LABEL));
             let respo,
              authOptions = {
                 method : 'POST',
@@ -265,17 +316,20 @@ export function creatLabelCall(data) {
             axios(authOptions)
                 .then(function(response) {
                   console.log('LABEL CREATE IS SUCCESS',response.data);
+                  dispatch(fetchingNoteStatusNull());
                   dispatch(creatLabel(response.data));
+                  dispatch(fetchLabelSuccess(CREAT_LABEL))
                 })
                 .catch(function(err){
                   console.error('LABEL CREATE IS NOT WORKING',err);
-                  dispatch(fetchLabelFailed(respo))
+                  dispatch(fetchLabelFailed(CREAT_LABEL,respo))
                 })
          }
 }
 
 export function deleteLabelCall(data) {
   return function(dispatch) {
+            dispatch(fetchLabelStart(DEL_LABEL));
             let respo,
               authOptions = {
                 method : 'DELETE',
@@ -295,12 +349,14 @@ export function deleteLabelCall(data) {
             axios(authOptions)
                 .then(function(response) {
                   console.log('LABEL CREATE IS SUCCESS',response);
+                  dispatch(fetchingNoteStatusNull());
                   dispatch(deleteLabel(data.id));
                   dispatch(noteLabelDelManagement(data.id));
+                  dispatch(fetchLabelSuccess(DEL_LABEL));
                 })
                 .catch(function(err){
                   console.error('LABEL CREATE IS NOT WORKING',err);
-                  dispatch(fetchLabelFailed(respo))
+                  dispatch(fetchLabelFailed(DEL_LABEL,respo))
                 })
          }
 }
@@ -310,8 +366,8 @@ export function deleteLabelCall(data) {
 */
 export function getCardsCall(token) {
   return function (dispatch) {
+          dispatch(fetchingNoteStart(GET_TODO));
           let respo;
-          dispatch(fetchingStart());
             var authOptions = {
                 method : 'GET',
                 url: "http://54.199.244.49/todo/note/",
@@ -327,17 +383,20 @@ export function getCardsCall(token) {
             axios(authOptions)
                 .then(function(response) {
                   console.log('@---FETCH_CARDS IS SUCCESS',response.data);
+                  dispatch(fetchLabelNull());
                   dispatch(getCards(JSON.parse(response.data)));
+                  dispatch(fetchingNoteSuceess(GET_TODO))
                 })
                 .catch(function(err){
                   console.error('FETCH_CARDS IS NOT WORKING',err,respo);
-                  dispatch(fetchingFailed(respo.error));     
+                  dispatch(fetchingNoteFailed(GET_TODO,respo.error));
                 })
         }
 }
 
 export function editCardCall(value) {
   return function (dispatch) {
+            dispatch(fetchingNoteStart(EDIT_TODO));
             console.error('editCard',value)
             let respo;
             let noteId = null;
@@ -361,28 +420,32 @@ export function editCardCall(value) {
             axios(authOptions)
                 .then(function(response) {
                   console.log("@---EDIT CARD SUCCESS",response.data);
+                  dispatch(fetchLabelNull());
                   noteId = response.data.id;
-                  dispatch( editCard({
-                      id : response.data.id,
-                      name : response.data.name,
-                      body : response.data.body
-                  }));
+
                   dispatch( noteLabelManagementCall({
                               id : value.id,
                               token : value.token,
                               addlabels : value.addLabelsData,
                               deleteLabels : value.deleteLabelData
                           }));
+                  dispatch( editCard({
+                      id : response.data.id,
+                      name : response.data.name,
+                      body : response.data.body
+                  }));
+                  dispatch(fetchingNoteSuceess(EDIT_TODO))
                 })
                 .catch(function(err){
                   console.error('LABEL EDIT IS NOT WORKING',err,respo);
-                  dispatch(fetchingFailed(respo.error));
+                  dispatch(fetchingNoteFailed(EDIT_TODO,respo.error));
                 })
             }
 }
 export function addCardCall(value) {
   console.log(value)
   return (dispatch) => {
+          dispatch(fetchingNoteStart(ADD_TODO));
           let respo,
               noteId = null,
               authOptions = {
@@ -402,6 +465,7 @@ export function addCardCall(value) {
             axios(authOptions)
                 .then(function(response) {
                   console.log('@-----CARD CREATE IS SUCCESS',response.data);
+                  dispatch(fetchLabelNull());
                   noteId = response.data.id;
                   dispatch( addCard(response.data) );
                   dispatch( noteLabelManagementCall({
@@ -410,10 +474,11 @@ export function addCardCall(value) {
                               addlabels : value.data.labelsData,
                               deleteLabels : ""
                           }));
+                 dispatch(fetchingNoteSuceess(ADD_TODO))
                 })
                 .catch(function(err){
                   console.error('@------CARD CREATE IS NOT WORKING',err,respo);
-                  dispatch(fetchingFailed(respo.error));
+                  dispatch(fetchingNoteFailed(ADD_TODO,respo.error));
                 })
          }
 }
@@ -421,6 +486,7 @@ export function addCardCall(value) {
 
 export function deleteCardCall(data) {
   return function(dispatch) {
+            dispatch(fetchingNoteStart(DEL_TODO));
             let respo,
               authOptions = {
                 method : 'DELETE',
@@ -438,17 +504,20 @@ export function deleteCardCall(data) {
             axios(authOptions)
                 .then(function(response) {
                   console.log('LABEL CREATE IS SUCCESS',response);
+                  dispatch(fetchLabelNull());
                   dispatch( deleteCard(data.id));
+                  dispatch(fetchingNoteSuceess(DEL_TODO))
                 })
                 .catch(function(err){
                   console.error('LABEL CREATE IS NOT WORKING',err);
-                  dispatch(fetchingFailed(respo.error));
+                  dispatch(fetchingNoteFailed(DEL_TODO,respo.error));
                 })
          }
 }
 
 export function noteLabelManagementCall(data) {
   return function(dispatch) {
+          // dispatch(fetchingNoteStart(NOTE_LABEL_MANAGEMENT));
           console.log('noteLabelManagementCall',data);
             let respo,
               authOptions = {
@@ -470,12 +539,13 @@ export function noteLabelManagementCall(data) {
             }
             axios(authOptions)
                 .then(function(response) {
+                  console.error('NOTE_LABEL_MANAGEMENT SUCCESS ',response);
                   dispatch(noteLabelManagement(response.data));
-                  console.log('NOTE_LABEL_MANAGEMENT SUCCESS',response);
+                  // dispatch(fetchingNoteSuceess(NOTE_LABEL_MANAGEMENT))
                 })
                 .catch(function(err){
                   console.error('NOTE_LABEL_MANAGEMENT FAIL ',err,respo);
-                  dispatch(fetchingFailed(respo.error));
+                  // dispatch(fetchingNoteFailed(NOTE_LABEL_MANAGEMENT,respo.error));
                 })
          }
 }

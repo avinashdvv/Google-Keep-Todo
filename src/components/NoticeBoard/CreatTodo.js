@@ -6,15 +6,19 @@ import { bindActionCreators } from 'redux';
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import FlatButton from 'material-ui/FlatButton';
 import Chip from 'material-ui/Chip';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
-
+import Popover from 'material-ui/Popover';
+import {List, ListItem, MakeSelectable} from 'material-ui/List';
+import Checkbox from 'material-ui/Checkbox';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 function mapDispatchToPros (dispatch) {
-  return bindActionCreators({ 
+  return bindActionCreators({
                               addCardCall : addCardCall,
-                              noteLabelManagement: noteLabelManagement 
+                              noteLabelManagement: noteLabelManagement
                             },dispatch);
 }
 
@@ -25,19 +29,31 @@ class CreatTodo extends Component {
     this.handleNoteLabel = this.handleNoteLabel.bind(this);
     this.creatNote = this.creatNote.bind(this);
     this.state = {
+      open : false,
       expanded: false,
-      value  : '',
       name : '',
-      body : ''
+      body : '',
+      labelsData : []
     }
   }
-  
+  handleTouchTap = (event) => {
+   // This prevents ghost click.
+   event.preventDefault();
+
+   this.setState({
+     open: true,
+     anchorEl: event.currentTarget,
+   });
+ };
+
+ handleRequestClose = () => {
+   this.setState({
+     open: false,
+   });
+ };
+
   handleExpandChange = (expanded) => {
     this.setState({expanded: expanded});
-  };
-
-  handleToggle = (event, toggle) => {
-    this.setState({expanded: toggle});
   };
 
   handleExpand = () => {
@@ -49,56 +65,48 @@ class CreatTodo extends Component {
     this.setState({expanded: false});
   };
 
-  handleChange = (value) =>{
-    this.setState({
-      value : value
-    });
-    console.log(this.state.value)
-  }
   handleName = (event) => {
     this.setState({
-      name : event.target.value
+      name : event.target.value,
     })
   }
   handleBody = (event) => {
     this.setState({
-      body : event.target.value
+      body : event.target.value,
     })
   }
   creatNote(event) {
     event.preventDefault()
-
+    console.error(this.state.labelsData);
     let todoName,todoBody;
     if(this.state.name !== undefined){
         todoName = this.state.name;
     }
     if(this.state.body !== undefined){
-       todoBody = this.state.body;  
+       todoBody = this.state.body;
     }
-    
-    let labels = "";
-    let addlabels;
-    if(this.state.value.length >= 1){
-      addlabels = this.state.value.map(function(value){
-                      labels += value.value+","
-                      return labels
-                    })
+    let labels = [];
+    if(this.state.labelsData.length >= 1){
+      this.state.labelsData.map((val) =>{
+        labels.push(val.id)
+      })
     }
     let data = {
                 body : {
                           "name" : ""+todoName,
                           "body" : ""+todoBody,
-                        },          
-                labelsData : labels.slice(0,-1)
-               } 
-   
+                        },
+                labelsData : labels.toString()
+               }
+
     this.props.addCardCall({
       token : this.props.token,
       data : data
       });
     this.handleReduce();
   }
-  handleNoteLabel() {
+
+  handleNoteLabel = () => {
     let labelsData = this.props.labelsData;
     let labels = [];
     if(labelsData.length >1){
@@ -112,43 +120,112 @@ class CreatTodo extends Component {
     }
     return labels
   }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.cardsFetchingStatus.method === "ADD_TODO" &&
+       nextProps.cardsFetchingStatus.success === true
+     ){
+       console.error('--------------------',nextProps);
+       document.getElementById('todoName').value = '';
+       document.getElementById('todoBody').value = '';
+       document.getElementById('labelsData').innerHTML = '';
+       this.setState({
+         expanded : false,
+         name : '',
+         body: '',
+         labelsData : []
+       })
+     }
+  }
+  handleLabels = () => {
+    let op
+    if(this.state.labelsData.lenght > 1){
+      op = this.state.labelsData.map((val) => {
+             return <span className='badge'>{val.name}</span>
+      })
+    }
+    return op;
+  }
+  handleLabelPopUP = (val,event) =>{
+    this.handleLabels()
+      if(event.target.checked === true){
+        console.error(event.target.checked, val)
+        let op = this.state.labelsData;
+        op.push(val)
+        this.setState({
+              labelsData : op
+        })
+      }
+      // let div =
+      var z = document.createElement('span');
+      z.className='badge';
+      z.innerHTML = ""+val.name;
+      document.getElementById('labelsData').appendChild(z)
+  }
+
   render(){
+    // onMouseLeave = {this.handleReduce}
     console.log('create todo', this.props)
     return(
-      <div>
+      <div className='create-todo'>
         <br/>
-        <Card expanded={this.state.expanded} onExpandChange={this.handleExpandChange}>
-          <CardTitle  expandable={true}>
+        <Card expanded={this.state.expanded}
+              onClick = {this.handleExpandChange}
+              onMouseEnter = {this.handleExpandChange}
+              showExpandableButton={true}>
             <TextField
+              expandable={true}
               id='todoName'
+              className='title'
               hintText="Title"
+              underlineShow={false}
               onChange={this.handleName}/>
-          </CardTitle>
-          <CardText onClick={this.handleExpand}>
+          <CardText onClick={this.handleExpand} className='todo-body'>
             <TextField
-              multiLine={true}
-              className='todo-body'
-              id='todoBody'
               hintText="Take a note"
+              multiLine={true}
+              id='todoBody'
+              fullWidth={true}
+              underlineShow={false}
               onChange={this.handleBody}>
             </TextField>
-          </CardText>
-          <div className='note-option-container'>
-            <Select
-                name="form-field-name"
-                value={this.state.value}
-                multi={true}
-                options={this.handleNoteLabel()}
-                onChange= {this.handleChange}/>
-            <div ref='labelContainer'>
+            <div id='labelsData'>
             </div>
-            <RaisedButton
-              label="done"
-              primary={true}
+            {this.handleLabels()}
+            <MuiThemeProvider>
+              <Popover
+                 open={this.state.open}
+                 anchorEl={this.state.anchorEl}
+                 anchorOrigin={{horizontal: 'left', vertical: 'bottom'}}
+                 targetOrigin={{horizontal: 'left', vertical: 'top'}}
+                 onRequestClose={this.handleRequestClose}
+               >
+                 {
+                   (()=>
+                     this.props.labelsData.map((val)=>{
+                       return <ListItem primaryText={""+val.name}
+                                    id={"listitem_"+val.id}
+                                    onClick={this.handleLabelPopUP.bind(this,val)}
+                                    key={'Checkbox__'+val.id} leftCheckbox={<Checkbox id={'listitem_checkbox_'+val.id} />} />
+                     })
+                   )()
+                 }
+               </Popover>
+             </MuiThemeProvider>
+          </CardText>
+          <CardActions className='note-option-container' expandable={true}>
+            <FlatButton
+              onClick={this.handleTouchTap}
+              label="Labels"
+              className='label-btn'
+              secondary={true}
+            />
+            <FlatButton
+              label="DONE"
               id='doneBtn'
               className='done-btn'
               onClick={this.creatNote} />
-          </div>
+          </CardActions>
         </Card>
         <br/>
       </div>

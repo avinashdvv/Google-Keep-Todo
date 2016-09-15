@@ -5,6 +5,7 @@ import { creatLabelCall } from '../../actions';
 
 import TextField from 'material-ui/TextField';
 import IconButton from 'material-ui/IconButton';
+import FontIcon from 'material-ui/FontIcon';
 
 function mapDispatchToPros (dispatch) {
   return bindActionCreators({ creatLabelCall : creatLabelCall },dispatch);
@@ -24,19 +25,32 @@ class CreatLabel extends Component {
       token : this.props.token
     });
   }
+
   render(){
     console.log('CREAT_LABEL ---------', this.props);
+    if(this.props.labelFetchingStatus.method === 'CREAT_LABEL' &&
+      this.props.labelFetchingStatus.success === true){
+            document.getElementById('newLabel').value = null
+      }
     return(
-      <div >
+      <div className='create-label'>
+          <IconButton
+            iconClassName="material-icons addicon"
+            id = 'addBtn'
+            onClick={()=> {
+                    document.getElementById('newLabel').value = null
+                  }}
+          >cancel</IconButton>
           <TextField
             className='new-label'
             id="newLabel"
             ref="newLabel"
+            underlineShow={false}
             hintText="Creat new label">
           </TextField>
-          
           <IconButton
             iconClassName="material-icons"
+            className='add-btn'
             tooltip="Ligature"
             onClick={this.makeLabel}>
             done</IconButton>

@@ -1,22 +1,185 @@
 $base-bg-colr : rgb(232, 232, 232);
+
 body{
-	background: $base-bg-colr;
+  background: rgb(232, 232, 232);
+  direction: ltr;
+  font-family: 'Roboto','Droid Sans',arial,sans-serif !important;
+  font-size: 15px !important;
+}
+.total-contanier{
+  display: flex;
+}
+.notice-board-container{
+  float: left;
+  margin-left: 2%;
+  width: 100%;
 }
 .notice-board{
-  min-height: 500px;
+  .todo-container{
+    margin-left: 10%;
+  }
+  .todo-card{
+    width: 240px;
+    // max-height: 150px;
+    margin: 16px;
+    color: rgba(0,0,0,.87);
+    direction: ltr;
+    font-size: 15px;
+    background-color:#fafafa !important;
+    background-clip: padding-box;
+    border: solid transparent;
+    box-sizing: border-box;
+    font-family: 'Roboto Slab','Times New Roman',serif;
+    outline: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    min-height: 28px;
+    -webkit-box-shadow: inset 1px 1px 0 rgba(0,0,0,.1),inset 0 -1px 0 rgba(0,0,0,.07) !important;
+    box-shadow: inset 1px 1px 0 rgba(0,0,0,.1),inset 0 -1px 0 rgba(0,0,0,.07) !important;
+    float: left;
+  }
+  .todo-card:hover{
+    box-shadow: 1px 1px 10px rgba(0,0,0,.25) !important;
+    .edit-text{
+      visibility: visible;
+      font-weight: bold !important;
+      text-transform: uppercase;
+      // background: white;
+      // color: black;
+    }
+  }
+  .todo-title{
+    font-family: 'Roboto Condensed','Droid Sans',arial,sans-serif;
+    text-transform: uppercase !important;
+    font-size: 17px;
+    font-weight: bold !important;
+    line-height: 23px;
+    min-height: 38px;
+    padding: 15px 15px 0 15px !important;
+  }
+  .card-text{
+    font-size: 14px !important;
+    line-height: 19px;
+    min-height: 46px;
+    padding: 12px 15px 15px 15px !important;
+    box-sizing: border-box;
+    font-family: 'Roboto Slab','Times New Roman',serif;
+    outline: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  .edit-text{
+    visibility: hidden;
+    background: black;
+    color: white;
+  }
 }
+.badge{
+  background: rgba(0,0,0,0.1);
+  border: 1px solid transparent;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  color: rgba(0,0,0,0.7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+  margin: 0 6px 6px 0;
+  padding: 4px 9px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px !important;
+  text-transform: none;
+}
+
 .row{
   margin: 0px;
 }
-.todo-body{
-  width: 100% !important;
+.create-todo{
+  width: 600px;
+  div{
+    background-color: #fafafa;
+  }
+  color: black;
+  // height: 121px;
+  margin-bottom: 30px;
+  .title{
+      font-weight: bold !important
+  }
+  .title,.todo-body,.note-option-container{
+    padding:  8px !important;
+  }
+
+  .done-btn{
+      margin: 0% 0% 0% 60% !important;
+  }
+  .done-btn,.label-btn{
+      height: 18px;
+      span{
+        font-weight: bold !important;
+      }
+  }
 }
+
 .notice-board-container{
   padding: 0px;
 }
-.done-btn{
-    margin: 0% 0% 2% 60%;
-}
 .note-option-container{
 	display : flex;
+}
+.dialog-box{
+
+  div>div>div{
+    background-color: rgb(250, 250, 250) !important;
+    padding: 0px !important;
+  }
+
+  .todo-title{
+    font-family: 'Roboto Condensed','Droid Sans',arial,sans-serif;
+    font-size: 17px !important;
+    font-weight: bold;
+    line-height: 23px;
+    padding: 10px 15px !important;
+  }
+  .todo-body{
+    font-size: 14px;
+    line-height: 19px;
+    min-height: 46px;
+    padding-left: 15px !important;
+    // padding: 12px 15px 15px 15px !important;
+    box-sizing: border-box;
+    font-family: 'Roboto Slab','Times New Roman',serif;
+    outline: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .edit-btn,.edit-label-btn,.del-btn,.done-btn{
+    span{
+      font-weight: bold !important;
+    }
+    border-radius: 3px;
+    color: rgba(0,0,0,.87);
+    font-size: 13px;
+    padding: 5px 14px;
+    text-transform: uppercase;
+  }
+  .edit-btn{
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    color: rgba(0,0,0,.87);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .edit-label-btn{
+    float: left;
+  }
+  .del-btn{
+
+  }
+  .labelsData{
+    padding-left: 15px !important;
+  }
+}
+.dialog-box+div{
+  border-radius: 6px;
 }

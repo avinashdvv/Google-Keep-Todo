@@ -1,35 +1,116 @@
 $base-bg-colr : rgb(232, 232, 232);
 .side-panel{
-  min-height: 500px;
-  background: $base-bg-colr;
   height: 100%;
-  padding-right: 0px;
+  padding: 0px;
+  width: 233px;
+  float: left;
 }
+
 .label-list{
+    display: block;
+    min-height: 40px;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    cursor: pointer;
+    font-family: Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+    color: #767676 !important;
   .label-heading{
-    margin: 5%;
+    cursor: default;
+    font-size: 13px;
+    padding: 15px 24px 10px;
   }
   .label-edit{
+    float: right;
+    padding-left: 30px;
+    .edit-btn {
+      border-radius: 3px !important;
+      color: rgba(0,0,0,.87) !important;
+      font: 13px/27px Roboto,RobotoDraft,Arial,sans-serif;
+      font-size: 12px !important;
+      text-transform: uppercase !important;
+
+      span{
+        font-weight: bold !important;
+      }
+    }
   }
   .label-options{
     display: flex;
     align-items: center;
   }
+  ul{
+    padding: 0px;
+    svg{
+      color: #767676 !important;
+    }
+  }
   .label-name{
     display: flex;
     align-items: center;
-    margin: 5%;
+    height: 48px;
+    padding: 4px 0px 4px 24px;
     span{
-      margin-left: 30%;
+      padding-left: 32px;
       text-transform: full-width;
     }
+    font: 13px/27px Roboto,RobotoDraft,Arial,sans-serif;
+    font-family: Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+    .addicon{
+      padding-left: 0px !important;
+    }
+  }
+  .label-details{
+    width: 300px !important;
   }
 }
-.new-label{
-  width: 80% !important;
-  min-height: 20px !important;
-}
-.edit-label{
-  width: 70% !important;
-  min-height: 20px !important;
+
+.edit-label-dialog{
+  .new-label{
+    display: flex;
+    -webkit-align-items: center;
+    align-items: center;
+    height: 45px;
+  }
+  h3+div{
+    overflow-y: auto;
+  }
+  .edit-label-box{
+    // button+
+  }
+  .create-label,.edit-label-box{
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+    .addicon,#newlabel,.del-icon,.edit-label{
+      margin-right: 10px;
+    }
+    .new-label:focus{
+      border-bottom: 1px solid rgba(0,0,0,0.2);
+    }
+    .done-icon{
+      font-size: 15px !important;
+    }
+    .add-btn,.done-icon,.del-icon{
+      visibility: visible; // need to be updated
+      color: rgba(0,0,0,.87) !important;
+      span{
+        font-size: 15px !important;
+      }
+    }
+    #addBtn{
+      padding: 0px !important;
+    }
+  }
+  .create-label:hover{
+    add-btn{
+      visibility: visible;
+    }
+  }
+  .edit-label{
+    min-height: 20px !important;
+    flex: 1 1 auto;
+    font-size: 14px !important;
+    font-weight: 500;
+    font-family: 'Roboto','Droid Sans',arial,sans-serif;
+  }
 }

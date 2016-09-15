@@ -1,6 +1,8 @@
 import {
       FETCH_LABEL_START,
+      FETCH_LABEL_SUCCESS,
       FETCH_LABEL_FAILED,
+      FETCH_LABELS_NULL,
       FETCH_LABELS,
       CREAT_LABEL,
       EDIT_LABEL,
@@ -10,21 +12,75 @@ import {
 
 export default function ( state = {
   arrayData : [],
-  isFetchStart : false,
-  isFetchFailed : ''
+  fetchingStatus : {
+      method  : "",
+      start : false,
+      success : false,
+      fail : {
+        status : false,
+        data : null
+      }
+  }
  }, action){
    switch (action.type) {
-    case FETCH_LABEL_START: {
-      return{
+    case FETCH_LABEL_START : {
+      let val = {
+        method : action.data,
+        start : true,
+        success : false,
+        fail : {
+          status : false,
+          data : null
+        }
+      }
+      return {
         ...state,
-        isFetchStart : true
+        fetchingStatus : val
       }
     }
-    case FETCH_LABEL_FAILED: {
-      console.log('FETCH_LABELS FAILED',action.data);
-      return{
+    case FETCH_LABEL_SUCCESS:{
+      let val = {
+        method : action.data,
+        start : false,
+        success: true,
+        fail : {
+          status : false,
+          data : null
+        }
+      }
+      return {
         ...state,
-        isFetchFailed : action.data
+        fetchingStatus : val
+      }
+    }
+    case FETCH_LABEL_FAILED : {
+      let val = {
+          method : action.method,
+          start : false,
+          success: false,
+          fail : {
+            status : true,
+            data : action.data
+          }
+      }
+      return {
+        ...state,
+        fetchingStatus : val
+      }
+    }
+    case FETCH_LABELS_NULL :{
+      let val =  {
+          method  : "",
+          start : false,
+          success : false,
+          fail : {
+            status : false,
+            data : null
+          }
+      }
+      return {
+        ...state,
+        fetchingStatus : val
       }
     }
     case FETCH_LABELS : {
@@ -43,7 +99,7 @@ export default function ( state = {
         arrayData : updatedArray
       }
      }
-     
+
      case EDIT_LABEL : {
       console.log('EDIT_LABEL_REDUCER ',action);
       let updatedArray = [];
@@ -78,4 +134,3 @@ export default function ( state = {
        return state;
    }
 }
-

@@ -1,49 +1,109 @@
 import {
-        GET_TOKEN,
-        NOTE_FETCH_CARDS_START,
+        NOTE_FETCH_START,
+        NOTE_FETCH_SUCCESS,
         NOTE_FETCH_FAILED,
+        NOTE_FETCH_STATUS_NULL,
+
+        GET_TOKEN,
+
         GET_TODO ,
         ADD_TODO,
         EDIT_TODO,
         DEL_TODO,
+
         NOTE_LABEL_MANAGEMENT,
         NOTE_LABEL_EDIT_MANAGEMENT,
-        NOTE_LABEL_DEL_MANAGEMENT
+        NOTE_LABEL_DEL_MANAGEMENT,
+        GET_LABELS_NOTES
       } from '../actions';
+let TEMP_ARRAY;
 export default function(state = {
   notesData : [],
   token : '',
-  isfetching : false,
-  isFetchingFailed : ''
+  fetchingStatus : {
+      method  : '',
+      start : false,
+      success : false,
+      fail : {
+        status : false,
+        data : null
+      }
+  }
 }, action){
   switch (action.type) {
-    
+
     case GET_TOKEN : {
        return {
                ...state,
                token : action.token,
-               isFetchingFailed : ''
               }
      }
-    case NOTE_FETCH_CARDS_START : {
+    case NOTE_FETCH_START : {
+      let val = {
+        method : action.data,
+        start : true,
+        success : false,
+        fail : {
+          status : false,
+          data : null
+        }
+      }
       return {
         ...state,
-        isfetching : true
+        fetchingStatus : val
+      }
+    }
+    case NOTE_FETCH_SUCCESS:{
+      let val = {
+        method : action.data,
+        start : false,
+        success: true,
+        fail : {
+          status : false,
+          data : null
+        }
+      }
+      return {
+        ...state,
+        fetchingStatus : val
       }
     }
     case NOTE_FETCH_FAILED : {
-      console.error('NOTE_FAILED',action.data)
+      let val = {
+          method : action.method,
+          start : false,
+          success: false,
+          fail : {
+            status : true,
+            data : action.data
+          }
+      }
       return {
         ...state,
-        isFetchingFailed :  action.data
+        fetchingStatus : val
+      }
+    }
+    case NOTE_FETCH_STATUS_NULL : {
+      let val = {
+          method  : '',
+          start : false,
+          success : false,
+          fail : {
+            status : false,
+            data : null
+          }
+      }
+      return {
+        ...state,
+        fetchingStatus : val
       }
     }
     case GET_TODO:{
       console.log('GET_TODO_REDUCER',state,action);
+      TEMP_ARRAY = action.payload.data;
       return{
               ...state,
               notesData : action.payload.data,
-              isFetchingFailed : ''
             }
     }
     case ADD_TODO:{
@@ -52,7 +112,6 @@ export default function(state = {
       return {
               ...state,
               notesData : updatedArray,
-              isFetchingFailed : ''
             }
     }
     case EDIT_TODO: {
@@ -69,7 +128,6 @@ export default function(state = {
       console.log('updatedArray EDIT_TODO_REDUCER >.>...',updatedArray)
        return {...state,
                 notesData : updatedArray,
-                isFetchingFailed : ''
                 }
     }
     case DEL_TODO:{
@@ -84,7 +142,6 @@ export default function(state = {
       return {
         ...state,
         notesData : updatedArray,
-        isFetchingFailed : ''
       }
     }
     case NOTE_LABEL_MANAGEMENT: {
@@ -100,7 +157,6 @@ export default function(state = {
       return {
               ...state,
               notesData : updatedArray,
-              isFetchingFailed : ''
              }
     }
     case NOTE_LABEL_EDIT_MANAGEMENT: {
@@ -121,7 +177,6 @@ export default function(state = {
       return {
         ...state,
         notesData : updatedArray,
-        isFetchingFailed : ''
       }
     }
     case NOTE_LABEL_DEL_MANAGEMENT: {
@@ -132,7 +187,7 @@ export default function(state = {
       })
       updatedArray.map((value) =>{
         let updatedLabels;
-        if(value.labels.length > 1 ){
+        if(value.labels.length >= 1 ){
             updatedLabels = value.labels.filter(function(el) {
               return el.id !== action.data;
             });
@@ -144,7 +199,21 @@ export default function(state = {
       return {
         ...state,
         notesData : updatedArray,
-        isFetchingFailed : ''
+      }
+    }
+    case GET_LABELS_NOTES: {
+      console.log('GET_LABELS_NOTES',action.data)
+      let updatedArray = [];
+      TEMP_ARRAY.map((val)=>{
+        val.labels.map((op)=>{
+          if(op.id === action.data){
+            updatedArray.push(val);
+          }
+        })
+      })
+      return {
+        ...state,
+        notesData : updatedArray,
       }
     }
     default:

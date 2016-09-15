@@ -12,22 +12,25 @@ class NoticeBoard extends Component {
      super(props);
    }
   render() {
+    console.error(this.props);
   	let board;
-  	if(!this.props.isCardsFetching){
+  	if(this.props.cardsFetchingStatus.start){
   		board = 'Loading .......'
   	}else{
-  		board = <TodoCard 
+  		board = <TodoCard
                 token={this.props.token}
-                labelsData={this.props.labelsData} 
-                isCardsFetchingFailed = {this.props.isCardsFetchingFailed}
+                labelsData={this.props.labelsData}
+                cardsFetchingStatus = {this.props.cardsFetchingStatus}
                 cardsData={this.props.cardsData}/>
   	}
-    
+
    return(
    	 <div className='notice-board'>
           <div className='row'>
               <div className="col-md-offset-3 col-md-7">
-                <CreatTodo token={this.props.token} labelsData={this.props.labelsData}/>
+                <CreatTodo token={this.props.token}
+                         cardsFetchingStatus={this.props.cardsFetchingStatus}
+                         labelsData={this.props.labelsData}/>
               </div>
           </div>
           {board}
